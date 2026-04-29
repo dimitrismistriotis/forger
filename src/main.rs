@@ -11,7 +11,7 @@ struct Cli {
 #[derive(Subcommand)]
 enum Commands {
     /// Creates new repository in <target> directory
-    New { target: Option<String> },
+    New { target: String },
 }
 
 const REPOSITORY_LOCATION: &str = "git@github.com:dimitrismistriotis/djforge.git";
