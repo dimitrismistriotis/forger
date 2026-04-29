@@ -26,7 +26,7 @@ fn main() {
         Commands::New { target } => {
             println!("Aiming to create new installation in {target:?}");
 
-            create_new_djforge(REPOSITORY_LOCATION, REPOSITORY_DEFAULT_BRANCH);
+            create_new_djforge(REPOSITORY_LOCATION, REPOSITORY_DEFAULT_BRANCH, target);
         }
     }
 }
