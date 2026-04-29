@@ -10,9 +10,12 @@ struct Cli {
 
 #[derive(Subcommand)]
 enum Commands {
-    /// Adds files to myapp
+    /// Creates new repository in <target> directory
     New { target: Option<String> },
 }
+
+const REPOSITORY_LOCATION: &str = "git@github.com:dimitrismistriotis/djforge.git";
+const REPOSITORY_DEFAULT_BRANCH: &str = "master";
 
 fn main() {
     let cli = Cli::parse();
@@ -20,6 +23,7 @@ fn main() {
     match &cli.command {
         Commands::New { target } => {
             println!("Aiming to create new installation in {target:?}");
+            println!("Will clone from {REPOSITORY_LOCATION} @ {REPOSITORY_DEFAULT_BRANCH}")
         }
     }
 }
