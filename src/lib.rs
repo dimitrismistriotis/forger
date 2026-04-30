@@ -1,7 +1,7 @@
 use git2::Repository;
 
 fn clone_repo(url: &str, path: &str) {
-    let repo = match Repository::clone(url, path) {
+    let _repo = match Repository::clone(url, path) {
         Ok(repo) => repo,
         Err(e) => panic!("Failed to clone: {}", e),
     };
