@@ -16,7 +16,7 @@ enum Commands {
     New { target: String },
 }
 
-const REPOSITORY_LOCATION: &str = "git@github.com:dimitrismistriotis/djforge.git";
+const REPOSITORY_LOCATION: &str = "https://github.com/dimitrismistriotis/djforge.git";
 const REPOSITORY_DEFAULT_BRANCH: &str = "master";
 
 fn main() {
