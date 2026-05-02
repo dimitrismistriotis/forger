@@ -34,4 +34,31 @@ pub fn create_new_djforge(
 
     let target_repository = clone_repo(repository, target_directory);
     println!("Empty: {}", target_repository.is_empty().unwrap());
+
+    // Source - https://stackoverflow.com/a/56942868
+    // Posted by szignal, modified by community. See post 'Timeline' for change history
+    // Retrieved 2026-05-02, License - CC BY-SA 4.0
+
+    let branch_name = "post_checkout_configuration";
+
+    let head = target_repository.head().unwrap();
+    let oid = head.target().unwrap();
+    let commit = target_repository.find_commit(oid).unwrap();
+
+    let _branch = target_repository.branch(
+        branch_name,
+        &commit,
+        false,
+    );
+
+    let obj = target_repository.revparse_single(&("refs/heads/".to_owned() + 
+        branch_name)).unwrap();
+
+    _ = target_repository.checkout_tree(
+        &obj,
+        None
+    );
+
+    _ = target_repository.set_head(&("refs/heads/".to_owned() + branch_name));
 }
+
