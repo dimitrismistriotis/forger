@@ -5,12 +5,14 @@ use git2::Repository;
 
 const FORGE_UNICODE: &str = "\u{1F528} "; // Space included
 
-fn clone_repo(url: &str, path: &str) {
-    let _repo = match Repository::clone(url, path) {
+fn clone_repo(url: &str, path: &str) -> git2::Repository {
+    let repo = match Repository::clone(url, path) {
         Ok(repo) => repo,
         Err(e) => panic!("Failed to clone: {}", e),
     };
     println!("Cloned {} to {}", url, path);
+
+    repo
 }
 
 pub fn create_new_djforge(
@@ -28,5 +30,6 @@ pub fn create_new_djforge(
         process::exit(1);
     }
 
-    _ = clone_repo(repository, target_directory);
+    let target_repository = clone_repo(repository, target_directory);
+    println!("Empty: {}", target_repository.is_empty().unwrap());
 }
