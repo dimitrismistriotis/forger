@@ -24,6 +24,8 @@ pub fn create_new_djforge(
 
     // Guard Clauses
 
+    // First is existence checking, I want to refactor this to
+    // check if the target directory is a repository and continue from there
     let path = Path::new(target_directory);
     if path.is_dir() {
         println!("\nDirectory {target_directory} already exists, exiting...");
