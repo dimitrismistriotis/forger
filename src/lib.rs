@@ -4,6 +4,7 @@ use std::process;
 use git2::Repository;
 
 const FORGE_UNICODE: &str = "\u{1F528} "; // Space included
+const CONFIGURATION_BRANCH_NAME: &str = "post_checkout_configuration";
 
 fn clone_repo(url: &str, path: &str) -> git2::Repository {
     let repo = match Repository::clone(url, path) {
@@ -39,26 +40,24 @@ pub fn create_new_djforge(
     // Posted by szignal, modified by community. See post 'Timeline' for change history
     // Retrieved 2026-05-02, License - CC BY-SA 4.0
 
-    let branch_name = "post_checkout_configuration";
-
     let head = target_repository.head().unwrap();
     let oid = head.target().unwrap();
     let commit = target_repository.find_commit(oid).unwrap();
 
     let _branch = target_repository.branch(
-        branch_name,
+        CONFIGURATION_BRANCH_NAME,
         &commit,
         false,
     );
 
     let obj = target_repository.revparse_single(&("refs/heads/".to_owned() + 
-        branch_name)).unwrap();
+        CONFIGURATION_BRANCH_NAME)).unwrap();
 
     _ = target_repository.checkout_tree(
         &obj,
         None
     );
 
-    _ = target_repository.set_head(&("refs/heads/".to_owned() + branch_name));
+    _ = target_repository.set_head(&("refs/heads/".to_owned() + CONFIGURATION_BRANCH_NAME));
 }
 
