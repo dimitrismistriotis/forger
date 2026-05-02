@@ -16,6 +16,27 @@ fn clone_repo(url: &str, path: &str) -> git2::Repository {
     repo
 }
 
+/// Checkout to post-configuration branch
+fn checkout_to_post_configuration_branch(target_repository: Repository) {
+    // Source - https://stackoverflow.com/a/56942868
+    // Posted by szignal, modified by community. See post 'Timeline' for change history
+    // Retrieved 2026-05-02, License - CC BY-SA 4.0
+
+    let head = target_repository.head().unwrap();
+    let oid = head.target().unwrap();
+    let commit = target_repository.find_commit(oid).unwrap();
+
+    let _branch = target_repository.branch(CONFIGURATION_BRANCH_NAME, &commit, false);
+
+    let obj = target_repository
+        .revparse_single(&("refs/heads/".to_owned() + CONFIGURATION_BRANCH_NAME))
+        .unwrap();
+
+    _ = target_repository.checkout_tree(&obj, None);
+
+    _ = target_repository.set_head(&("refs/heads/".to_owned() + CONFIGURATION_BRANCH_NAME));
+}
+
 pub fn create_new_djforge(
     repository: &'static str,
     target_branch: &'static str,
@@ -36,28 +57,5 @@ pub fn create_new_djforge(
     let target_repository = clone_repo(repository, target_directory);
     println!("Empty: {}", target_repository.is_empty().unwrap());
 
-    // Source - https://stackoverflow.com/a/56942868
-    // Posted by szignal, modified by community. See post 'Timeline' for change history
-    // Retrieved 2026-05-02, License - CC BY-SA 4.0
-
-    let head = target_repository.head().unwrap();
-    let oid = head.target().unwrap();
-    let commit = target_repository.find_commit(oid).unwrap();
-
-    let _branch = target_repository.branch(
-        CONFIGURATION_BRANCH_NAME,
-        &commit,
-        false,
-    );
-
-    let obj = target_repository.revparse_single(&("refs/heads/".to_owned() + 
-        CONFIGURATION_BRANCH_NAME)).unwrap();
-
-    _ = target_repository.checkout_tree(
-        &obj,
-        None
-    );
-
-    _ = target_repository.set_head(&("refs/heads/".to_owned() + CONFIGURATION_BRANCH_NAME));
+    checkout_to_post_configuration_branch(target_repository);
 }
-
