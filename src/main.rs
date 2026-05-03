@@ -1,6 +1,6 @@
 use clap::{Parser, Subcommand};
 
-use forger::create_new_djforge;
+use forger::{create_new_djforge, update_ports};
 
 #[derive(Parser)]
 #[command(version, about, long_about = None)]
@@ -26,12 +26,10 @@ fn main() {
 
     match &cli.command {
         Commands::New { target } => {
-            println!("Aiming to create new installation in {target:?}");
-
             create_new_djforge(REPOSITORY_LOCATION, REPOSITORY_DEFAULT_BRANCH, target);
         },
         Commands::ReplacePort { target } => {
-            println!("Replacing ports in {target:?}");
+            update_ports(target)
         }
     }
 }

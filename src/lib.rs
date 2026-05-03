@@ -59,3 +59,9 @@ pub fn create_new_djforge(
 
     checkout_to_post_configuration_branch(target_repository);
 }
+
+pub fn update_ports(
+    target_directory: &str,
+) {
+    println!("{FORGE_UNICODE} Optional find and replace for service ports in {target_directory}");
+}
