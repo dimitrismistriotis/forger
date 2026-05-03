@@ -14,6 +14,8 @@ struct Cli {
 enum Commands {
     /// Creates new repository in <target> directory
     New { target: String },
+    /// Replaces ports for services for cloned repository in <target> directory
+    ReplacePort { target: String },
 }
 
 const REPOSITORY_LOCATION: &str = "https://github.com/dimitrismistriotis/djforge.git";
@@ -27,6 +29,9 @@ fn main() {
             println!("Aiming to create new installation in {target:?}");
 
             create_new_djforge(REPOSITORY_LOCATION, REPOSITORY_DEFAULT_BRANCH, target);
+        },
+        Commands::ReplacePort { target } => {
+            println!("Replacing ports in {target:?}");
         }
     }
 }
