@@ -1,6 +1,6 @@
 use clap::{Parser, Subcommand};
 
-use forger::{create_new_djforge, update_ports};
+use forger::{create_new_djforge, replace_ports};
 
 #[derive(Parser)]
 #[command(version, about, long_about = None)]
@@ -15,7 +15,7 @@ enum Commands {
     /// Creates new repository in <target> directory
     New { target: String },
     /// Replaces ports for services for cloned repository in <target> directory
-    ReplacePort { target: String },
+    ReplacePorts { target: String },
 }
 
 const REPOSITORY_LOCATION: &str = "https://github.com/dimitrismistriotis/djforge.git";
@@ -28,8 +28,8 @@ fn main() {
         Commands::New { target } => {
             create_new_djforge(REPOSITORY_LOCATION, REPOSITORY_DEFAULT_BRANCH, target);
         },
-        Commands::ReplacePort { target } => {
-            update_ports(target)
+        Commands::ReplacePorts { target } => {
+            replace_ports(target)
         }
     }
 }
