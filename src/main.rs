@@ -1,6 +1,7 @@
 use clap::{Parser, Subcommand};
 
 use forger::{create_new_djforge, replace_ports};
+use forger::doctor::check_environment;
 
 #[derive(Parser)]
 #[command(version, about, long_about = None)]
@@ -31,6 +32,8 @@ fn main() {
         },
         Commands::Doctor => {
             println!("Check that everything needed for forger to run is available");
+
+            check_environment();
         }
         Commands::ReplacePorts { target } => replace_ports(target),
     }

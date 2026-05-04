@@ -20,6 +20,8 @@ struct PortAndService {
     replace_only_mapped: bool,
 }
 
+pub mod doctor; 
+
 const CONFIGURATION_BRANCH_NAME: &str = "post_checkout_configuration";
 const PORTS_AND_SERVICES: [PortAndService; 5] = [
     PortAndService {
