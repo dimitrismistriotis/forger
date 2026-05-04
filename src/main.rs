@@ -16,6 +16,7 @@ enum Commands {
     New { target: String },
     /// Replaces ports for services for cloned repository in <target> directory
     ReplacePorts { target: String },
+    Doctor
 }
 
 const REPOSITORY_LOCATION: &str = "https://github.com/dimitrismistriotis/djforge.git";
@@ -27,6 +28,9 @@ fn main() {
     match &cli.command {
         Commands::New { target } => {
             create_new_djforge(REPOSITORY_LOCATION, REPOSITORY_DEFAULT_BRANCH, target);
+        },
+        Commands::Doctor => {
+            println!("Check that everything needed for forger to run is available");
         }
         Commands::ReplacePorts { target } => replace_ports(target),
     }
