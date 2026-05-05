@@ -3,8 +3,18 @@ use std::process;
 
 use git2::Repository;
 
+#[derive(Debug)]
+struct PortAndService {
+    port_number: i16,
+    service_name: &'static str,
+}
+
 const FORGE_UNICODE: &str = "\u{1F528} "; // Space included
 const CONFIGURATION_BRANCH_NAME: &str = "post_checkout_configuration";
+const PORTS_AND_SERVICES:[PortAndService; 1] = [
+    PortAndService{port_number: 111, service_name: "111f"}
+    ];
+
 
 fn clone_repo(url: &str, path: &str) -> git2::Repository {
     let repo = match Repository::clone(url, path) {
@@ -64,4 +74,7 @@ pub fn replace_ports(
     target_directory: &str,
 ) {
     println!("{FORGE_UNICODE} Optional find and replace for service ports in {target_directory}");
+    for port_and_service in PORTS_AND_SERVICES {
+        println!("{} ==> {}", port_and_service.service_name, port_and_service.port_number)
+    }
 }
