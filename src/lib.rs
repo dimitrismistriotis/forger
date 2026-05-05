@@ -76,5 +76,10 @@ pub fn replace_ports(
     println!("{FORGE_UNICODE} Optional find and replace for service ports in {target_directory}");
     for port_and_service in PORTS_AND_SERVICES {
         println!("{} ==> {}", port_and_service.service_name, port_and_service.port_number)
+
+        // TODO
+        // Write a message about changing
+        // Call a process wrapping sed to do a find and replace for the port number
+        // Commit the changes
     }
 }
