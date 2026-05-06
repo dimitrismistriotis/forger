@@ -2,6 +2,7 @@ use std::path::Path;
 use std::process;
 
 use git2::Repository;
+use yes_or_no::yes_or_no;
 
 #[derive(Debug)]
 struct PortAndService {
@@ -45,6 +46,7 @@ fn checkout_to_post_configuration_branch(target_repository: Repository) {
     _ = target_repository.checkout_tree(&obj, None);
 
     _ = target_repository.set_head(&("refs/heads/".to_owned() + CONFIGURATION_BRANCH_NAME));
+
 }
 
 pub fn create_new_djforge(
@@ -68,6 +70,16 @@ pub fn create_new_djforge(
     println!("Empty: {}", target_repository.is_empty().unwrap());
 
     checkout_to_post_configuration_branch(target_repository);
+
+
+    match yes_or_no("{FORGE_UNICODE} Proceed to port number replace?", true) {
+        Ok(Some(true)) => replace_ports(target_directory),
+        Ok(Some(false)) => println!("{FORGE_UNICODE} Proceeding without port replacement"),
+        Ok(None) => println!(""),
+        Err(_) => {
+            process::exit(1);
+        }
+    }
 }
 
 pub fn replace_ports(
