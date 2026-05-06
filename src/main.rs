@@ -27,9 +27,7 @@ fn main() {
     match &cli.command {
         Commands::New { target } => {
             create_new_djforge(REPOSITORY_LOCATION, REPOSITORY_DEFAULT_BRANCH, target);
-        },
-        Commands::ReplacePorts { target } => {
-            replace_ports(target)
         }
+        Commands::ReplacePorts { target } => replace_ports(target),
     }
 }

@@ -12,10 +12,10 @@ struct PortAndService {
 
 const FORGE_UNICODE: &str = "\u{1F528} "; // Space included
 const CONFIGURATION_BRANCH_NAME: &str = "post_checkout_configuration";
-const PORTS_AND_SERVICES:[PortAndService; 1] = [
-    PortAndService{port_number: 111, service_name: "111f"}
-    ];
-
+const PORTS_AND_SERVICES: [PortAndService; 1] = [PortAndService {
+    port_number: 111,
+    service_name: "111f",
+}];
 
 fn clone_repo(url: &str, path: &str) -> git2::Repository {
     let repo = match Repository::clone(url, path) {
@@ -46,7 +46,6 @@ fn checkout_to_post_configuration_branch(target_repository: Repository) {
     _ = target_repository.checkout_tree(&obj, None);
 
     _ = target_repository.set_head(&("refs/heads/".to_owned() + CONFIGURATION_BRANCH_NAME));
-
 }
 
 pub fn create_new_djforge(
@@ -71,7 +70,6 @@ pub fn create_new_djforge(
 
     checkout_to_post_configuration_branch(target_repository);
 
-
     match yes_or_no("{FORGE_UNICODE} Proceed to port number replace?", true) {
         Ok(Some(true)) => replace_ports(target_directory),
         Ok(Some(false)) => println!("{FORGE_UNICODE} Proceeding without port replacement"),
@@ -82,12 +80,13 @@ pub fn create_new_djforge(
     }
 }
 
-pub fn replace_ports(
-    target_directory: &str,
-) {
+pub fn replace_ports(target_directory: &str) {
     println!("{FORGE_UNICODE} Optional find and replace for service ports in {target_directory}");
     for port_and_service in PORTS_AND_SERVICES {
-        println!("{} ==> {}", port_and_service.service_name, port_and_service.port_number)
+        println!(
+            "{} ==> {}",
+            port_and_service.service_name, port_and_service.port_number
+        )
 
         // TODO
         // Write a message about changing
