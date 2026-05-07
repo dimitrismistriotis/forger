@@ -4,6 +4,10 @@ use std::process;
 use git2::Repository;
 use inquire::Text;
 
+pub mod port_number_rewrite;
+
+use port_number_rewrite::replace_text_in_target_folder;
+
 #[derive(Debug)]
 struct PortAndService {
     port_number: i16,
@@ -73,6 +77,8 @@ pub fn create_new_djforge(
     replace_ports(target_directory);
 }
 
+/// Replace Standar Ports
+/// Wraps call to sed with replace parameters
 pub fn replace_ports(target_directory: &str) {
     println!("{FORGE_UNICODE} Optional find and replace for service ports in {target_directory}");
     for port_and_service in PORTS_AND_SERVICES {
@@ -90,7 +96,10 @@ pub fn replace_ports(target_directory: &str) {
             .prompt();
 
         match port_for_service {
-            Ok(provided_port_from_user) => println!("Provided: {}", provided_port_from_user),
+            Ok(provided_port_from_user) => {
+                println!("Provided: {}", provided_port_from_user);
+                replace_text_in_target_folder()
+            } 
             Err(_) => println!("An error happened when asking for target port."),
         }
 
