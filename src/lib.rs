@@ -91,14 +91,16 @@ pub fn replace_ports(target_directory: &str) {
             "Which port should be used for {}?",
             port_and_service.service_name
         );
+        // Shadow to string:
+        let target_port_number = format!("{}", port_and_service.port_number);
         let port_for_service = Text::new(&port_prompt)
-            .with_default(&format!("{}", port_and_service.port_number))
+            .with_default(&target_port_number)
             .prompt();
 
         match port_for_service {
             Ok(provided_port_from_user) => {
                 println!("Provided: {}", provided_port_from_user);
-                replace_text_in_target_folder()
+                replace_text_in_target_folder(&target_port_number, &provided_port_from_user);
             } 
             Err(_) => println!("An error happened when asking for target port."),
         }
