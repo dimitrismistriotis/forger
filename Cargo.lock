@@ -229,7 +229,6 @@ dependencies = [
  "clap",
  "git2",
  "inquire",
- "yes-or-no",
 ]
 
 [[package]]
@@ -878,15 +877,6 @@ name = "writeable"
 version = "0.6.3"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "1ffae5123b2d3fc086436f8834ae3ab053a283cfac8fe0a0b8eaae044768a4c4"
-
-[[package]]
-name = "yes-or-no"
-version = "0.2.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "8d297ee15d67ea31584a9397f0af5ea02c7dbe8e11c86d3b4194c34455338e87"
-dependencies = [
- "crossterm",
-]
 
 [[package]]
 name = "yoke"

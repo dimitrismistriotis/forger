@@ -3,7 +3,6 @@ use std::process;
 
 use git2::Repository;
 use inquire::Text;
-use yes_or_no::yes_or_no;
 
 #[derive(Debug)]
 struct PortAndService {
@@ -71,14 +70,7 @@ pub fn create_new_djforge(
 
     checkout_to_post_configuration_branch(target_repository);
 
-    match yes_or_no("{FORGE_UNICODE} Proceed to port number replace?", true) {
-        Ok(Some(true)) => replace_ports(target_directory),
-        Ok(Some(false)) => println!("{FORGE_UNICODE} Proceeding without port replacement"),
-        Ok(None) => println!(""),
-        Err(_) => {
-            process::exit(1);
-        }
-    }
+    replace_ports(target_directory);
 }
 
 pub fn replace_ports(target_directory: &str) {
