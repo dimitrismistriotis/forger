@@ -3,6 +3,7 @@ use std::process;
 
 use git2::Repository;
 use yes_or_no::yes_or_no;
+use inquire::Text;
 
 #[derive(Debug)]
 struct PortAndService {
@@ -86,7 +87,14 @@ pub fn replace_ports(target_directory: &str) {
         println!(
             "{} ==> {}",
             port_and_service.service_name, port_and_service.port_number
-        )
+        );
+
+        let port_for_service = Text::new("What is your name?").prompt();
+
+        match port_for_service {
+            Ok(name) => println!("Hello {}", name),
+            Err(_) => println!("An error happened when asking for your name, try again later."),
+        }
 
         // TODO
         // Write a message about changing
