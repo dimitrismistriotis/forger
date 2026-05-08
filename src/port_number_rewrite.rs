@@ -3,6 +3,32 @@ use std::process::Command;
 pub fn replace_text_in_target_folder(source_port_number: &str, target_port_number: &str) {
     println!("Inside text replacer {source_port_number} ➡️ {target_port_number}");
     // Call a process wrapping sed to do a find and replace for the port number
+    //
+    // From Command line to copy/modify:
+    // ❯ rg Readme target123/
+    // target123/README.md
+    // 1:# Readme
+    //
+    // Drop output code
+    //
+    // Need to refactor something line this:
+    // The basic syntax to replace old_string with new_string in all files
+    // under the current directory is:
+    //
+    // find . -type f -exec sed -i 's/old_string/new_string/g' {} +
+    //
+    // or
+    //
+    // Exclude Directories: Exclude hidden directories like .git or node_modules:
+    // find . -type f -not -path "./.git/*" -not -path "./node_modules/*" -exec
+    // sed -i 's/old/new/g' {} +
+    //
+    // find target123 -type f -not -path "./.git/*" -not -path "./node_modules/*" -exec  sed -i 's/Readme/ReadYou/g' {} +
+    //
+    // ❯ rg ReadYou target123/
+    // target123/README.md
+    // 1:# ReadYou
+    //
     let output = Command::new("ls")
         .arg("-l")
         .output()
