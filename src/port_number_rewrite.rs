@@ -40,12 +40,6 @@ pub fn replace_text_in_target_folder(
     // target123/README.md
     // 1:# ReadYou
     //
-    let command_to_run = format!(
-        "\"./.git/*\" -not -path \"./node_modules/*\" -exec  sed -i 's/{}/{}/g' {} +",
-        source_port_number, target_port_number, "{}"
-    );
-
-    println!("{}", &command_to_run);
 
     let output = Command::new("find")
         .arg(&target_directory)
@@ -57,8 +51,12 @@ pub fn replace_text_in_target_folder(
         .arg("-not")
         .arg("-path")
         .arg("\"./node_modules/*\"")
-        // -exec  sed -i 's/{}/{}/g' {} +",
-        // .arg(&command_to_run)
+        .arg("-exec")
+        .arg("sed")
+//        .arg("-i")
+//        .arg(format!("'s/{}/{}/g'", source_port_number, target_port_number))
+//        .arg(format!("{}", "{}"))
+//        .arg("+")
         .output()
         .expect("Failed to execute command");
 
