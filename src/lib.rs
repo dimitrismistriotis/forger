@@ -99,7 +99,7 @@ pub fn replace_ports(target_directory: &str) {
     println!("{FORGE_UNICODE} Optional find and replace for service ports in {target_directory}");
     for port_and_service in PORTS_AND_SERVICES {
         println!(
-            "{} ==> {}",
+            "{} on port {}",
             port_and_service.service_name, port_and_service.port_number
         );
 

@@ -20,30 +20,21 @@ pub fn replace_text_in_target_folder(
         target_port_number,
     );
 
-    let mut replace_in_docker_compose_command = Command::new("find");
-    replace_in_docker_compose_command 
-        .arg(&target_directory)
-        .arg("-type")
-        .arg("f")
-        .arg("-not")
-        .arg("-path")
-        .arg("./.git/*")
-        .arg("-not")
-        .arg("-path")
-        .arg("./node_modules/*")
-        .arg("-not")
-        .arg("-path")
-        .arg("uv.lock")
-        .arg("-exec")
-        .arg("sed")
+    let    docker_compose_location = format!("{}/docker-compose.yml", target_directory);
+    let mut replace_in_docker_compose_command = Command::new("sed");
+    replace_in_docker_compose_command
         .arg("-i")
-        .arg(format!("s/{}/{}/g", source_port_number, target_port_number))
-        .arg(format!("{}", "{}"))
-        .arg("+");
+        .arg(format!(
+            "s/{}:{}/{}:{}/g",
+            source_port_number, source_port_number, source_port_number, target_port_number
+        ))
+        .arg(&docker_compose_location);
 
     println!("Executing: {:?}", replace_in_docker_compose_command);
 
-    let output = replace_in_docker_compose_command.output().expect("Failed to execute command");
+    let output = replace_in_docker_compose_command
+        .output()
+        .expect("Failed to execute command");
 
     // Check exit status
     if output.status.success() {
@@ -81,10 +72,10 @@ fn replace_text_in_target_folder_excluding_compose_port_mapping(
         .arg("./node_modules/*")
         .arg("-not")
         .arg("-path")
-        .arg("docker-compose.yml")
+        .arg("./docker-compose.yml")
         .arg("-not")
         .arg("-path")
-        .arg("uv.lock")
+        .arg("./uv.lock")
         .arg("-exec")
         .arg("sed")
         .arg("-i")
