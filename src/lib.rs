@@ -6,7 +6,10 @@ use inquire::{Confirm, Text};
 
 pub mod port_number_rewrite;
 
+mod common_strings;
+
 use port_number_rewrite::replace_text_in_target_folder;
+use common_strings::FORGE_UNICODE;
 
 #[derive(Debug)]
 struct PortAndService {
@@ -14,7 +17,6 @@ struct PortAndService {
     service_name: &'static str,
 }
 
-const FORGE_UNICODE: &str = "\u{1F528} "; // Space included
 const CONFIGURATION_BRANCH_NAME: &str = "post_checkout_configuration";
 const PORTS_AND_SERVICES: [PortAndService; 1] = [PortAndService {
     port_number: 5432,
