@@ -48,14 +48,14 @@ pub fn replace_text_in_target_folder(
         .arg("f")
         .arg("-not")
         .arg("-path")
-        .arg("\"./.git/*\"")
+        .arg("./.git/*")
         .arg("-not")
         .arg("-path")
-        .arg("\"./node_modules/*\"")
+        .arg("./node_modules/*")
         .arg("-exec")
         .arg("sed")
         .arg("-i")
-        .arg(format!("'s/{}/{}/g'", source_port_number, target_port_number))
+        .arg(format!("s/{}/{}/g", source_port_number, target_port_number))
         .arg(format!("{}", "{}"))
         .arg("+");
 
@@ -77,5 +77,7 @@ pub fn replace_text_in_target_folder(
         }
     } else {
         eprintln!("Command failed with status: {}", output.status);
+            let error_message = String::from_utf8_lossy(&output.stderr);
+    eprintln!("Command failed with error: {}", error_message);
     }
 }
