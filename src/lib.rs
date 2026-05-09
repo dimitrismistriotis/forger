@@ -8,8 +8,8 @@ pub mod port_number_rewrite;
 
 mod common_strings;
 
-use port_number_rewrite::replace_text_in_target_folder;
 use common_strings::FORGE_UNICODE;
+use port_number_rewrite::replace_text_in_target_folder;
 
 #[derive(Debug)]
 struct PortAndService {
