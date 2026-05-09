@@ -74,6 +74,11 @@ pub fn create_new_djforge(
 
     checkout_to_post_configuration_branch(target_repository);
 
+    conditionally_replace_ports(target_directory);
+}
+
+/// Wraps replace_ports allowing main function to cal a one-liner
+fn conditionally_replace_ports(target_directory: &str) {
     let port_rename_prompt = Confirm::new("Continue with Port rename?")
         .with_default(true)
         .with_help_message("Find/Replace in target directory of default ports for Database and other services. Aims to allow multiple installations running together")
