@@ -8,6 +8,11 @@ pub fn replace_text_in_target_folder(
     target_port_number: &str,
 ) {
     println!("{FORGE_UNICODE}Inside port replacer {source_port_number} ➡️ {target_port_number}");
+
+    if source_port_number == target_port_number {
+        println!("No change in ports, continuing...");
+        return;
+    }
     // Call a process wrapping sed to do a find and replace for the port number
     //
     // From Command line to copy/modify:
