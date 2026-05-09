@@ -41,11 +41,24 @@ pub fn replace_text_in_target_folder(
     // 1:# ReadYou
     //
     let command_to_run = format!(
-        "find {} -type f -not -path \"./.git/*\" -not -path \"./node_modules/*\" -exec  sed -i 's/{}/{}/g' {} +",
-        target_directory, source_port_number, target_port_number, "{}"
+        "\"./.git/*\" -not -path \"./node_modules/*\" -exec  sed -i 's/{}/{}/g' {} +",
+        source_port_number, target_port_number, "{}"
     );
 
-    let output = Command::new(&command_to_run)
+    println!("{}", &command_to_run);
+
+    let output = Command::new("find")
+        .arg(&target_directory)
+        .arg("-type")
+        .arg("f")
+        .arg("-not")
+        .arg("-path")
+        .arg("\"./.git/*\"")
+        .arg("-not")
+        .arg("-path")
+        .arg("\"./node_modules/*\"")
+        // -exec  sed -i 's/{}/{}/g' {} +",
+        // .arg(&command_to_run)
         .output()
         .expect("Failed to execute command");
 
