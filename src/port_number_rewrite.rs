@@ -15,10 +15,10 @@ pub fn replace_text_in_target_folder(
     }
 
     replace_text_in_target_folder_excluding_compose_port_mapping(
-
-    target_directory,
-    source_port_number,
-    target_port_number);
+        target_directory,
+        source_port_number,
+        target_port_number,
+    );
 
     let mut replace_command = Command::new("find");
     replace_command
@@ -43,8 +43,7 @@ pub fn replace_text_in_target_folder(
 
     println!("Executing: {:?}", replace_command);
 
-    let output = replace_command.output()
-        .expect("Failed to execute command");
+    let output = replace_command.output().expect("Failed to execute command");
 
     // Check exit status
     if output.status.success() {
@@ -59,8 +58,8 @@ pub fn replace_text_in_target_folder(
         }
     } else {
         eprintln!("Command failed with status: {}", output.status);
-            let error_message = String::from_utf8_lossy(&output.stderr);
-    eprintln!("Command failed with error: {}", error_message);
+        let error_message = String::from_utf8_lossy(&output.stderr);
+        eprintln!("Command failed with error: {}", error_message);
     }
 }
 
@@ -82,6 +81,9 @@ fn replace_text_in_target_folder_excluding_compose_port_mapping(
         .arg("./node_modules/*")
         .arg("-not")
         .arg("-path")
+        .arg("docker-compose.yml")
+        .arg("-not")
+        .arg("-path")
         .arg("uv.lock")
         .arg("-exec")
         .arg("sed")
@@ -92,8 +94,7 @@ fn replace_text_in_target_folder_excluding_compose_port_mapping(
 
     println!("Executing: {:?}", replace_command);
 
-    let output = replace_command.output()
-        .expect("Failed to execute command");
+    let output = replace_command.output().expect("Failed to execute command");
 
     // Check exit status
     if output.status.success() {
@@ -108,7 +109,7 @@ fn replace_text_in_target_folder_excluding_compose_port_mapping(
         }
     } else {
         eprintln!("Command failed with status: {}", output.status);
-            let error_message = String::from_utf8_lossy(&output.stderr);
-    eprintln!("Command failed with error: {}", error_message);
+        let error_message = String::from_utf8_lossy(&output.stderr);
+        eprintln!("Command failed with error: {}", error_message);
     }
 }
