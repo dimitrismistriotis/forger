@@ -1,6 +1,6 @@
 use std::process::Command;
 
-pub fn replace_text_in_target_folder(source_port_number: &str, target_port_number: &str) {
+pub fn replace_text_in_target_folder(target_directory: &str, source_port_number: &str, target_port_number: &str) {
     println!("Inside text replacer {source_port_number} ➡️ {target_port_number}");
     // Call a process wrapping sed to do a find and replace for the port number
     //
@@ -29,8 +29,9 @@ pub fn replace_text_in_target_folder(source_port_number: &str, target_port_numbe
     // target123/README.md
     // 1:# ReadYou
     //
-    let output = Command::new("ls")
-        .arg("-l")
+    let command_to_run = format!("find {} -type f -not -path \"./.git/*\" -not -path \"./node_modules/*\" -exec  sed -i 's/{}/{}/g' {} +", target_directory, source_port_number, target_port_number, "{}");
+
+    let output = Command::new(&command_to_run)
         .output()
         .expect("Failed to execute command");
 

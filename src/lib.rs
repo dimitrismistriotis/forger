@@ -17,8 +17,8 @@ struct PortAndService {
 const FORGE_UNICODE: &str = "\u{1F528} "; // Space included
 const CONFIGURATION_BRANCH_NAME: &str = "post_checkout_configuration";
 const PORTS_AND_SERVICES: [PortAndService; 1] = [PortAndService {
-    port_number: 111,
-    service_name: "111f",
+    port_number: 5432,
+    service_name: "Postgresql, RDBMs used by the project",
 }];
 
 fn clone_repo(url: &str, path: &str) -> git2::Repository {
@@ -114,7 +114,7 @@ pub fn replace_ports(target_directory: &str) {
         match port_for_service {
             Ok(provided_port_from_user) => {
                 println!("Provided: {}", provided_port_from_user);
-                replace_text_in_target_folder(&target_port_number, &provided_port_from_user);
+                replace_text_in_target_folder(&target_directory, &target_port_number, &provided_port_from_user);
             } 
             Err(_) => println!("An error happened when asking for target port."),
         }
