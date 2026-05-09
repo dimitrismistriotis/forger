@@ -41,7 +41,8 @@ pub fn replace_text_in_target_folder(
     // 1:# ReadYou
     //
 
-    let output = Command::new("find")
+    let mut replace_command = Command::new("find");
+    replace_command
         .arg(&target_directory)
         .arg("-type")
         .arg("f")
@@ -53,11 +54,14 @@ pub fn replace_text_in_target_folder(
         .arg("\"./node_modules/*\"")
         .arg("-exec")
         .arg("sed")
-//        .arg("-i")
-//        .arg(format!("'s/{}/{}/g'", source_port_number, target_port_number))
-//        .arg(format!("{}", "{}"))
-//        .arg("+")
-        .output()
+        .arg("-i")
+        .arg(format!("'s/{}/{}/g'", source_port_number, target_port_number))
+        .arg(format!("{}", "{}"))
+        .arg("+");
+
+    println!("Executing: {:?}", replace_command);
+
+    let output = replace_command.output()
         .expect("Failed to execute command");
 
     // Check exit status
