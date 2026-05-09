@@ -20,8 +20,8 @@ pub fn replace_text_in_target_folder(
         target_port_number,
     );
 
-    let mut replace_command = Command::new("find");
-    replace_command
+    let mut replace_in_docker_compose_command = Command::new("find");
+    replace_in_docker_compose_command 
         .arg(&target_directory)
         .arg("-type")
         .arg("f")
@@ -41,9 +41,9 @@ pub fn replace_text_in_target_folder(
         .arg(format!("{}", "{}"))
         .arg("+");
 
-    println!("Executing: {:?}", replace_command);
+    println!("Executing: {:?}", replace_in_docker_compose_command);
 
-    let output = replace_command.output().expect("Failed to execute command");
+    let output = replace_in_docker_compose_command.output().expect("Failed to execute command");
 
     // Check exit status
     if output.status.success() {
