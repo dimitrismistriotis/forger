@@ -114,8 +114,12 @@ pub fn replace_ports(target_directory: &str) {
         match port_for_service {
             Ok(provided_port_from_user) => {
                 println!("Provided: {}", provided_port_from_user);
-                replace_text_in_target_folder(&target_directory, &target_port_number, &provided_port_from_user);
-            } 
+                replace_text_in_target_folder(
+                    &target_directory,
+                    &target_port_number,
+                    &provided_port_from_user,
+                );
+            }
             Err(_) => println!("An error happened when asking for target port."),
         }
 
