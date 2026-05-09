@@ -2,7 +2,7 @@ use std::path::Path;
 use std::process;
 
 use git2::Repository;
-use inquire::Text;
+use inquire::{Confirm, Text};
 
 pub mod port_number_rewrite;
 
@@ -74,7 +74,16 @@ pub fn create_new_djforge(
 
     checkout_to_post_configuration_branch(target_repository);
 
-    replace_ports(target_directory);
+    let port_rename_prompt = Confirm::new("Continue with Port rename?")
+        .with_default(true)
+        .with_help_message("Find/Replace in target directory of default ports for Database and other services. Aims to allow multiple installations running together")
+        .prompt();
+
+    match port_rename_prompt {
+        Ok(true) => replace_ports(target_directory),
+        Ok(false) => println!("Continuing without port rename"),
+        Err(_) => println!("Error with Port renaming"),
+    }
 }
 
 /// Replace Standar Ports
