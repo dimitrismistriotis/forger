@@ -20,11 +20,24 @@ struct PortAndService {
 }
 
 const CONFIGURATION_BRANCH_NAME: &str = "post_checkout_configuration";
-const PORTS_AND_SERVICES: [PortAndService; 1] = [PortAndService {
-    port_number: 5432,
-    service_name: "Postgresql, RDBMs used by the project",
-}];
-
+const PORTS_AND_SERVICES: [PortAndService; 1] = [
+    PortAndService {
+        port_number: 5432,
+        service_name: "Postgresql, RDBMs used by the project",
+    },
+    PortAndService {
+        port_number: 1025,
+        service_name: "Mailcrab, Monitor email dispatches",
+    },
+    PortAndService {
+        port_number: 6379,
+        service_name: "Redis, Used for caching and communication with Celery for async tasks",
+    },
+//    PortAndService {
+//    port_number: 5432,
+//        service_name: "PG Admin, Postgresql Administration and web ui",
+ //   },
+];
 fn clone_repo(url: &str, path: &str) -> git2::Repository {
     let repo = match Repository::clone(url, path) {
         Ok(repo) => repo,
@@ -126,7 +139,12 @@ pub fn replace_ports(target_directory: &str) {
 
                 if replace_happened {
                     // Commit the changes
-                    let commit_message = format!("Replaced {} port for {} with {}", &port_and_service.port_number, &port_and_service.service_name, &provided_port_from_user);
+                    let commit_message = format!(
+                        "Replaced {} port for {} with {}",
+                        &port_and_service.port_number,
+                        &port_and_service.service_name,
+                        &provided_port_from_user
+                    );
                     match commit_to_directory(target_directory, &commit_message) {
                         Ok(_) => println!("Committed: {}", commit_message),
                         Err(e) => println!("Failed to commit: {}", e),
