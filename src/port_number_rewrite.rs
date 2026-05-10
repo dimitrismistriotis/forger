@@ -61,7 +61,7 @@ fn replace_text_in_target_folder_excluding_compose_port_mapping(
     target_directory: &str,
     source_port_number: &str,
     target_port_number: &str,
-) {
+) -> bool {
     let mut replace_command = Command::new("find");
     replace_command
         .arg(&target_directory)
@@ -102,10 +102,17 @@ fn replace_text_in_target_folder_excluding_compose_port_mapping(
         let stderr = String::from_utf8_lossy(&output.stderr);
         if !stderr.is_empty() {
             eprintln!("Warnings/Errors:\n{}", stderr);
+
+            return false;
         }
+
     } else {
         eprintln!("Command failed with status: {}", output.status);
         let error_message = String::from_utf8_lossy(&output.stderr);
         eprintln!("Command failed with error: {}", error_message);
+
+        return false;
     }
+
+    true
 }
