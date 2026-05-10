@@ -17,27 +17,33 @@ use port_number_rewrite::replace_text_in_target_folder;
 struct PortAndService {
     port_number: i16,
     service_name: &'static str,
+    replace_only_mapped: bool,
 }
 
 const CONFIGURATION_BRANCH_NAME: &str = "post_checkout_configuration";
-const PORTS_AND_SERVICES: [PortAndService; 1] = [
+const PORTS_AND_SERVICES: [PortAndService; 4] = [
     PortAndService {
         port_number: 5432,
         service_name: "Postgresql, RDBMs used by the project",
+        replace_only_mapped: false,
     },
     PortAndService {
         port_number: 1025,
         service_name: "Mailcrab, Monitor email dispatches",
+        replace_only_mapped: false,
     },
     PortAndService {
         port_number: 6379,
         service_name: "Redis, Used for caching and communication with Celery for async tasks",
+        replace_only_mapped: false,
     },
-//    PortAndService {
-//    port_number: 5432,
-//        service_name: "PG Admin, Postgresql Administration and web ui",
- //   },
+    PortAndService {
+        port_number: 5432,
+        service_name: "PG Admin, Postgresql Administration and web ui",
+        replace_only_mapped: true,
+    },
 ];
+
 fn clone_repo(url: &str, path: &str) -> git2::Repository {
     let repo = match Repository::clone(url, path) {
         Ok(repo) => repo,
@@ -114,9 +120,14 @@ pub fn replace_ports(target_directory: &str) {
     println!("{FORGE_UNICODE} Optional find and replace for service ports in {target_directory}");
     for port_and_service in PORTS_AND_SERVICES {
         println!(
-            "{} on port {}",
-            port_and_service.service_name, port_and_service.port_number
+            "{} on port {}, replace only mapped port: {}",
+            port_and_service.service_name, port_and_service.port_number, port_and_service.replace_only_mapped,
         );
+
+        if port_and_service.replace_only_mapped {
+            println!("Not supporting only mapped at this moment");
+            continue;
+        }
 
         let port_prompt = format!(
             "Which port should be used for {}?",
