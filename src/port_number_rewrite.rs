@@ -23,40 +23,40 @@ pub fn replace_text_in_target_folder(
     );
 
     for file_with_port_mapping in FILES_WITH_PORT_MAPPING {
-        println!("{}", file_with_port_mapping)
-    }
+        println!("{}", file_with_port_mapping);
 
-    let    docker_compose_location = format!("{}/docker-compose.yml", target_directory);
-    let mut replace_in_docker_compose_command = Command::new("sed");
-    replace_in_docker_compose_command
-        .arg("-i")
-        .arg(format!(
-            "s/{}:{}/{}:{}/g",
-            source_port_number, source_port_number, source_port_number, target_port_number
-        ))
-        .arg(&docker_compose_location);
+        let target_location = format!("{}/{}", target_directory, file_with_port_mapping);
+        let mut replace_command = Command::new("sed");
+        replace_command
+            .arg("-i")
+            .arg(format!(
+                "s/{}:{}/{}:{}/g",
+                source_port_number, source_port_number, source_port_number, target_port_number
+            ))
+            .arg(&target_location);
 
-    println!("Executing: {:?}", replace_in_docker_compose_command);
+        println!("Executing: {:?}", replace_command);
 
-    let output = replace_in_docker_compose_command
-        .output()
-        .expect("Failed to execute command");
+        let output = replace_command
+            .output()
+            .expect("Failed to execute port mapping replace command");
 
-    // Check exit status
-    if output.status.success() {
-        // Convert stdout to string
-        let stdout = String::from_utf8_lossy(&output.stdout);
-        println!("Success! Output:\n{}", stdout);
+        // Check exit status
+        if output.status.success() {
+            // Convert stdout to string
+            let stdout = String::from_utf8_lossy(&output.stdout);
+            println!("Success! Output:\n{}", stdout);
 
-        // Optionally handle stderr
-        let stderr = String::from_utf8_lossy(&output.stderr);
-        if !stderr.is_empty() {
-            eprintln!("Warnings/Errors:\n{}", stderr);
+            // Optionally handle stderr
+            let stderr = String::from_utf8_lossy(&output.stderr);
+            if !stderr.is_empty() {
+                eprintln!("Warnings/Errors:\n{}", stderr);
+            }
+        } else {
+            eprintln!("Command failed with status: {}", output.status);
+            let error_message = String::from_utf8_lossy(&output.stderr);
+            eprintln!("Command failed with error: {}", error_message);
         }
-    } else {
-        eprintln!("Command failed with status: {}", output.status);
-        let error_message = String::from_utf8_lossy(&output.stderr);
-        eprintln!("Command failed with error: {}", error_message);
     }
 
     true
@@ -110,7 +110,6 @@ fn replace_text_in_target_folder_excluding_compose_port_mapping(
 
             return false;
         }
-
     } else {
         eprintln!("Command failed with status: {}", output.status);
         let error_message = String::from_utf8_lossy(&output.stderr);
