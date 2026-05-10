@@ -121,13 +121,10 @@ pub fn replace_ports(target_directory: &str) {
     for port_and_service in PORTS_AND_SERVICES {
         println!(
             "{} on port {}, replace only mapped port: {}",
-            port_and_service.service_name, port_and_service.port_number, port_and_service.replace_only_mapped,
+            port_and_service.service_name,
+            port_and_service.port_number,
+            port_and_service.replace_only_mapped,
         );
-
-        if port_and_service.replace_only_mapped {
-            println!("Not supporting only mapped at this moment");
-            continue;
-        }
 
         let port_prompt = format!(
             "Which port should be used for {}?",
@@ -146,6 +143,7 @@ pub fn replace_ports(target_directory: &str) {
                     &target_directory,
                     &target_port_number,
                     &provided_port_from_user,
+                    port_and_service.replace_only_mapped,
                 );
 
                 if replace_happened {
