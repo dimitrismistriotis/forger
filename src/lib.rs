@@ -38,7 +38,7 @@ const PORTS_AND_SERVICES: [PortAndService; 4] = [
         replace_only_mapped: false,
     },
     PortAndService {
-        port_number: 5432,
+        port_number: 5050,
         service_name: "PG Admin, Postgresql Administration and web ui",
         replace_only_mapped: true,
     },
