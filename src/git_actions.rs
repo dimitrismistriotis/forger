@@ -1,6 +1,9 @@
 use git2::{IndexAddOption, Repository};
 
-pub fn commit_to_directory(target_directory: &str, commit_message: &str) -> Result<git2::Oid, git2::Error> {
+pub fn commit_to_directory(
+    target_directory: &str,
+    commit_message: &str,
+) -> Result<git2::Oid, git2::Error> {
     let repo = Repository::open(target_directory)?;
 
     let mut index = repo.index()?;
