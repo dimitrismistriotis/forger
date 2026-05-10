@@ -2,6 +2,8 @@ use std::process::Command;
 
 use crate::common_strings::FORGE_UNICODE;
 
+const FILES_WITH_PORT_MAPPING: [&str; 2] = ["docker-compose.yml", ".github/workflows/pytest.yml"];
+
 pub fn replace_text_in_target_folder(
     target_directory: &str,
     source_port_number: &str,
@@ -19,6 +21,10 @@ pub fn replace_text_in_target_folder(
         source_port_number,
         target_port_number,
     );
+
+    for file_with_port_mapping in FILES_WITH_PORT_MAPPING {
+        println!("{}", file_with_port_mapping)
+    }
 
     let    docker_compose_location = format!("{}/docker-compose.yml", target_directory);
     let mut replace_in_docker_compose_command = Command::new("sed");
@@ -52,7 +58,6 @@ pub fn replace_text_in_target_folder(
         let error_message = String::from_utf8_lossy(&output.stderr);
         eprintln!("Command failed with error: {}", error_message);
     }
-// .github/workflows/pytest.yml
 
     true
 }
