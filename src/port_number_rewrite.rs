@@ -6,12 +6,12 @@ pub fn replace_text_in_target_folder(
     target_directory: &str,
     source_port_number: &str,
     target_port_number: &str,
-) {
+) -> bool {
     println!("{FORGE_UNICODE}Inside port replacer {source_port_number} ➡️ {target_port_number}");
 
     if source_port_number == target_port_number {
         println!("No change in ports, continuing...");
-        return;
+        return false;
     }
 
     replace_text_in_target_folder_excluding_compose_port_mapping(
@@ -52,6 +52,9 @@ pub fn replace_text_in_target_folder(
         let error_message = String::from_utf8_lossy(&output.stderr);
         eprintln!("Command failed with error: {}", error_message);
     }
+// .github/workflows/pytest.yml
+
+    true
 }
 
 fn replace_text_in_target_folder_excluding_compose_port_mapping(
@@ -75,6 +78,9 @@ fn replace_text_in_target_folder_excluding_compose_port_mapping(
         .arg("docker-compose.yml")
         .arg("-not")
         .arg("-name")
+        .arg("pytest.yml")
+        .arg("-not")
+        .arg("-name")
         .arg("uv.lock")
         .arg("-exec")
         .arg("sed")
@@ -82,7 +88,6 @@ fn replace_text_in_target_folder_excluding_compose_port_mapping(
         .arg(format!("s/{}/{}/g", source_port_number, target_port_number))
         .arg(format!("{}", "{}"))
         .arg("+");
-
     println!("Executing: {:?}", replace_command);
 
     let output = replace_command.output().expect("Failed to execute command");
