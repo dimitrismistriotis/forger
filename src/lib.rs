@@ -7,8 +7,10 @@ use inquire::{Confirm, Text};
 pub mod port_number_rewrite;
 
 mod common_strings;
+mod git_actions;
 
 use common_strings::FORGE_UNICODE;
+use git_actions::commit_to_directory;
 use port_number_rewrite::replace_text_in_target_folder;
 
 #[derive(Debug)]
@@ -116,16 +118,18 @@ pub fn replace_ports(target_directory: &str) {
         match port_for_service {
             Ok(provided_port_from_user) => {
                 println!("Provided: {}", provided_port_from_user);
-                replace_text_in_target_folder(
+                let replace_happened = replace_text_in_target_folder(
                     &target_directory,
                     &target_port_number,
                     &provided_port_from_user,
                 );
+
+                if replace_happened {
+                    // Commit the changes
+                    commit_to_directory();
+                }
             }
             Err(_) => println!("An error happened when asking for target port."),
         }
-
-        // TODO
-        // Commit the changes
     }
 }
