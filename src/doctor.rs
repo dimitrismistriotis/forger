@@ -1,4 +1,5 @@
 use std::process::Command;
+use std::io::ErrorKind::NotFound;
 
 #[derive(Debug)]
 struct CommandAndDescription {
@@ -48,6 +49,10 @@ pub fn check_environment() {
             Err(command_error) => {
                 println!("Could not find command provided");
                 println!("{}", command_error);
+                dbg!(command_error.kind());
+                if command_error.kind() == NotFound {
+                    println!("NNNNOT");
+                }
             }
         }
     }
