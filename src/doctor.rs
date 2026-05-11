@@ -1,6 +1,23 @@
 use std::process::Command;
 
-pub fn check_environment() {
+#[derive(Debug)]
+struct CommandAndDescription {
+    comand: &'static str,
+    description: &'static str,
+}
+
+const COMMANDS_TO_CHECK: [CommandAndDescription; 2] = [
+    CommandAndDescription {
+        command: "uv",
+        description: "UV from Astral",
+    },
+    CommandAndDescription {
+        command: "npx",
+        description: "NPX allows you to execute Node.js packages without permanently installing them globally",
+    },
+];
+
+pub fn check_existing_commands() {
     let output = Command::new("ls")
         .arg("-l")
         .output()
@@ -11,7 +28,7 @@ pub fn check_environment() {
         // Convert stdout to string
         let stdout = String::from_utf8_lossy(&output.stdout);
         println!("Success! Output:\n{}", stdout);
-        
+
         // Optionally handle stderr
         let stderr = String::from_utf8_lossy(&output.stderr);
         if !stderr.is_empty() {

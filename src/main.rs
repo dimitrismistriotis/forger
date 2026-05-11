@@ -1,7 +1,7 @@
 use clap::{Parser, Subcommand};
 
-use forger::{create_new_djforge, replace_ports};
 use forger::doctor::check_environment;
+use forger::{create_new_djforge, replace_ports};
 
 #[derive(Parser)]
 #[command(version, about, long_about = None)]
@@ -14,10 +14,14 @@ struct Cli {
 #[derive(Subcommand)]
 enum Commands {
     /// Creates new repository in <target> directory
-    New { target: String },
+    New {
+        target: String,
+    },
     /// Replaces ports for services for cloned repository in <target> directory
-    ReplacePorts { target: String },
-    Doctor
+    ReplacePorts {
+        target: String,
+    },
+    Doctor,
 }
 
 const REPOSITORY_LOCATION: &str = "https://github.com/dimitrismistriotis/djforge.git";
@@ -29,7 +33,7 @@ fn main() {
     match &cli.command {
         Commands::New { target } => {
             create_new_djforge(REPOSITORY_LOCATION, REPOSITORY_DEFAULT_BRANCH, target);
-        },
+        }
         Commands::Doctor => {
             println!("Check that everything needed for forger to run is available");
 
