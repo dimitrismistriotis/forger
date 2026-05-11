@@ -19,29 +19,36 @@ const COMMANDS_TO_CHECK: [CommandAndDescription; 2] = [
 
 pub fn check_environment() {
     for command_to_check in COMMANDS_TO_CHECK {
-        print!(
+        println!(
             "Checking {}, {}",
             command_to_check.command, command_to_check.description
         );
 
-        let output = Command::new("ls")
-            .arg("-l")
-            .output()
-            .expect("Failed to execute command");
+        let command_output = Command::new("ladskkasdkass").output();
+
+        match command_output {
+            Ok(result_ok) => {
 
         // Check exit status
-        if output.status.success() {
+        if result_ok.status.success() {
             // Convert stdout to string
-            let stdout = String::from_utf8_lossy(&output.stdout);
+            let stdout = String::from_utf8_lossy(&result_ok.stdout);
             println!("Success! Output:\n{}", stdout);
 
             // Optionally handle stderr
-            let stderr = String::from_utf8_lossy(&output.stderr);
+            let stderr = String::from_utf8_lossy(&result_ok.stderr);
             if !stderr.is_empty() {
                 eprintln!("Warnings/Errors:\n{}", stderr);
             }
         } else {
-            eprintln!("Command failed with status: {}", output.status);
+            eprintln!("Command failed with status: {}", result_ok.status);
+        }
+
+            },
+            Err(command_error) => {
+                println!("Could not find command provided");
+                println!("{}", command_error);
+            }
         }
     }
 }
