@@ -21,7 +21,7 @@ struct PortAndService {
 }
 
 const CONFIGURATION_BRANCH_NAME: &str = "post_checkout_configuration";
-const PORTS_AND_SERVICES: [PortAndService; 4] = [
+const PORTS_AND_SERVICES: [PortAndService; 5] = [
     PortAndService {
         port_number: 5432,
         service_name: "Postgresql, RDBMs used by the project",
@@ -29,12 +29,17 @@ const PORTS_AND_SERVICES: [PortAndService; 4] = [
     },
     PortAndService {
         port_number: 1025,
-        service_name: "Mailcrab, Monitor email dispatches",
+        service_name: "Mailcrab, monitor email dispatches, STMP port",
+        replace_only_mapped: false,
+    },
+    PortAndService {
+        port_number: 1080,
+        service_name: "Mailcrab, monitor email dispatches, web display port",
         replace_only_mapped: false,
     },
     PortAndService {
         port_number: 6379,
-        service_name: "Redis, Used for caching and communication with Celery for async tasks",
+        service_name: "Redis, used for caching and communication with Celery for async tasks",
         replace_only_mapped: false,
     },
     PortAndService {
