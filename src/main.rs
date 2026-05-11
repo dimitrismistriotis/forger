@@ -1,6 +1,6 @@
 use clap::{Parser, Subcommand};
 
-use forger::create_new_djforge;
+use forger::{create_new_djforge, replace_ports};
 
 #[derive(Parser)]
 #[command(version, about, long_about = None)]
@@ -14,6 +14,8 @@ struct Cli {
 enum Commands {
     /// Creates new repository in <target> directory
     New { target: String },
+    /// Replaces ports for services for cloned repository in <target> directory
+    ReplacePorts { target: String },
 }
 
 const REPOSITORY_LOCATION: &str = "https://github.com/dimitrismistriotis/djforge.git";
@@ -24,9 +26,8 @@ fn main() {
 
     match &cli.command {
         Commands::New { target } => {
-            println!("Aiming to create new installation in {target:?}");
-
             create_new_djforge(REPOSITORY_LOCATION, REPOSITORY_DEFAULT_BRANCH, target);
         }
+        Commands::ReplacePorts { target } => replace_ports(target),
     }
 }

@@ -2,9 +2,52 @@ use std::path::Path;
 use std::process;
 
 use git2::Repository;
+use inquire::{Confirm, Text};
 
-const FORGE_UNICODE: &str = "\u{1F528} "; // Space included
+pub mod port_number_rewrite;
+
+mod common_strings;
+mod git_actions;
+
+use common_strings::FORGE_UNICODE;
+use git_actions::commit_to_directory;
+use port_number_rewrite::replace_text_in_target_folder;
+
+#[derive(Debug)]
+struct PortAndService {
+    port_number: i16,
+    service_name: &'static str,
+    replace_only_mapped: bool,
+}
+
 const CONFIGURATION_BRANCH_NAME: &str = "post_checkout_configuration";
+const PORTS_AND_SERVICES: [PortAndService; 5] = [
+    PortAndService {
+        port_number: 5432,
+        service_name: "Postgresql, RDBMs used by the project",
+        replace_only_mapped: false,
+    },
+    PortAndService {
+        port_number: 1025,
+        service_name: "Mailcrab, monitor email dispatches, STMP port",
+        replace_only_mapped: false,
+    },
+    PortAndService {
+        port_number: 1080,
+        service_name: "Mailcrab, monitor email dispatches, web display port",
+        replace_only_mapped: false,
+    },
+    PortAndService {
+        port_number: 6379,
+        service_name: "Redis, used for caching and communication with Celery for async tasks",
+        replace_only_mapped: false,
+    },
+    PortAndService {
+        port_number: 5050,
+        service_name: "PG Admin, Postgresql Administration and web ui",
+        replace_only_mapped: true,
+    },
+];
 
 fn clone_repo(url: &str, path: &str) -> git2::Repository {
     let repo = match Repository::clone(url, path) {
@@ -58,4 +101,71 @@ pub fn create_new_djforge(
     println!("Empty: {}", target_repository.is_empty().unwrap());
 
     checkout_to_post_configuration_branch(target_repository);
+
+    conditionally_replace_ports(target_directory);
+}
+
+/// Wraps replace_ports allowing main function to cal a one-liner
+fn conditionally_replace_ports(target_directory: &str) {
+    let port_rename_prompt = Confirm::new("Continue with Port rename?")
+        .with_default(true)
+        .with_help_message("Find/Replace in target directory of default ports for Database and other services. Aims to allow multiple installations running together")
+        .prompt();
+
+    match port_rename_prompt {
+        Ok(true) => replace_ports(target_directory),
+        Ok(false) => println!("Continuing without port rename"),
+        Err(_) => println!("Error with Port renaming"),
+    }
+}
+
+/// Replace Standard/Dafault Ports
+/// Wraps call to sed with replace parameters, commits after each replace.
+pub fn replace_ports(target_directory: &str) {
+    println!("{FORGE_UNICODE} Optional find and replace for service ports in {target_directory}");
+    for port_and_service in PORTS_AND_SERVICES {
+        println!(
+            "{} on port {}, replace only mapped port: {}",
+            port_and_service.service_name,
+            port_and_service.port_number,
+            port_and_service.replace_only_mapped,
+        );
+
+        let port_prompt = format!(
+            "Which port should be used for {}?",
+            port_and_service.service_name
+        );
+        // Shadow to string:
+        let target_port_number = format!("{}", port_and_service.port_number);
+        let port_for_service = Text::new(&port_prompt)
+            .with_default(&target_port_number)
+            .prompt();
+
+        match port_for_service {
+            Ok(provided_port_from_user) => {
+                println!("Provided: {}", provided_port_from_user);
+                let replace_happened = replace_text_in_target_folder(
+                    &target_directory,
+                    &target_port_number,
+                    &provided_port_from_user,
+                    port_and_service.replace_only_mapped,
+                );
+
+                if replace_happened {
+                    // Commit the changes
+                    let commit_message = format!(
+                        "Replaced {} port for {} with {}",
+                        &port_and_service.port_number,
+                        &port_and_service.service_name,
+                        &provided_port_from_user
+                    );
+                    match commit_to_directory(target_directory, &commit_message) {
+                        Ok(_) => println!("Committed: {}", commit_message),
+                        Err(e) => println!("Failed to commit: {}", e),
+                    }
+                }
+            }
+            Err(_) => println!("An error happened when asking for target port."),
+        }
+    }
 }
