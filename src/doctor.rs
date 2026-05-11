@@ -2,7 +2,7 @@ use std::process::Command;
 
 #[derive(Debug)]
 struct CommandAndDescription {
-    comand: &'static str,
+    command: &'static str,
     description: &'static str,
 }
 
@@ -17,24 +17,31 @@ const COMMANDS_TO_CHECK: [CommandAndDescription; 2] = [
     },
 ];
 
-pub fn check_existing_commands() {
-    let output = Command::new("ls")
-        .arg("-l")
-        .output()
-        .expect("Failed to execute command");
+pub fn check_environment() {
+    for command_to_check in COMMANDS_TO_CHECK {
+        print!(
+            "Checking {}, {}",
+            command_to_check.command, command_to_check.description
+        );
 
-    // Check exit status
-    if output.status.success() {
-        // Convert stdout to string
-        let stdout = String::from_utf8_lossy(&output.stdout);
-        println!("Success! Output:\n{}", stdout);
+        let output = Command::new("ls")
+            .arg("-l")
+            .output()
+            .expect("Failed to execute command");
 
-        // Optionally handle stderr
-        let stderr = String::from_utf8_lossy(&output.stderr);
-        if !stderr.is_empty() {
-            eprintln!("Warnings/Errors:\n{}", stderr);
+        // Check exit status
+        if output.status.success() {
+            // Convert stdout to string
+            let stdout = String::from_utf8_lossy(&output.stdout);
+            println!("Success! Output:\n{}", stdout);
+
+            // Optionally handle stderr
+            let stderr = String::from_utf8_lossy(&output.stderr);
+            if !stderr.is_empty() {
+                eprintln!("Warnings/Errors:\n{}", stderr);
+            }
+        } else {
+            eprintln!("Command failed with status: {}", output.status);
         }
-    } else {
-        eprintln!("Command failed with status: {}", output.status);
     }
 }
