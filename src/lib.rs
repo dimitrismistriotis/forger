@@ -8,8 +8,10 @@ pub mod port_number_rewrite;
 
 mod common_strings;
 mod git_actions;
+pub mod doctor;
 
 use common_strings::FORGE_UNICODE;
+use doctor::check_environment;
 use git_actions::{clone_repo, commit_to_directory};
 use port_number_rewrite::replace_text_in_target_folder;
 
@@ -19,8 +21,6 @@ struct PortAndService {
     service_name: &'static str,
     replace_only_mapped: bool,
 }
-
-pub mod doctor;
 
 const CONFIGURATION_BRANCH_NAME: &str = "post_checkout_configuration";
 const PORTS_AND_SERVICES: [PortAndService; 5] = [
@@ -95,6 +95,8 @@ pub fn create_new_djforge(
     checkout_to_post_configuration_branch(target_repository);
 
     conditionally_replace_ports(target_directory);
+
+    check_environment();
 }
 
 /// Wraps replace_ports allowing main function to cal a one-liner
