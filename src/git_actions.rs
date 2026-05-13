@@ -1,5 +1,16 @@
 use git2::{IndexAddOption, Repository};
 
+pub fn clone_repo(url: &str, path: &str) -> git2::Repository {
+    let repo = match Repository::clone(url, path) {
+        Ok(repo) => repo,
+        Err(e) => panic!("Failed to clone: {}", e),
+    };
+    println!("Cloned {} to {}", url, path);
+
+    repo
+}
+
+
 pub fn commit_to_directory(
     target_directory: &str,
     commit_message: &str,

@@ -10,7 +10,7 @@ mod common_strings;
 mod git_actions;
 
 use common_strings::FORGE_UNICODE;
-use git_actions::commit_to_directory;
+use git_actions::{clone_repo, commit_to_directory};
 use port_number_rewrite::replace_text_in_target_folder;
 
 #[derive(Debug)]
@@ -50,16 +50,6 @@ const PORTS_AND_SERVICES: [PortAndService; 5] = [
         replace_only_mapped: true,
     },
 ];
-
-fn clone_repo(url: &str, path: &str) -> git2::Repository {
-    let repo = match Repository::clone(url, path) {
-        Ok(repo) => repo,
-        Err(e) => panic!("Failed to clone: {}", e),
-    };
-    println!("Cloned {} to {}", url, path);
-
-    repo
-}
 
 /// Checkout to post-configuration branch
 fn checkout_to_post_configuration_branch(target_repository: Repository) {
