@@ -28,7 +28,7 @@ pub fn check_environment() {
             command_to_check.command, command_to_check.description
         );
 
-        let command_output = Command::new("ladskkasdkass").output();
+        let command_output = Command::new(format!("which {}", command_to_check.command)).output();
 
         match command_output {
             Ok(result_ok) => {
@@ -36,15 +36,15 @@ pub fn check_environment() {
                 if result_ok.status.success() {
                     // Convert stdout to string
                     let stdout = String::from_utf8_lossy(&result_ok.stdout);
-                    println!("Success! Output:\n{}", stdout);
+                    println!("{} found, output:\n{}", command_to_check.command, stdout);
 
                     // Optionally handle stderr
-                    let stderr = String::from_utf8_lossy(&result_ok.stderr);
-                    if !stderr.is_empty() {
-                        eprintln!("Warnings/Errors:\n{}", stderr);
-                    }
+                    // let stderr = String::from_utf8_lossy(&result_ok.stderr);
+                    // if !stderr.is_empty() {
+                    //    eprintln!("Warnings/Errors:\n{}", stderr);
+                    //}
                 } else {
-                    eprintln!("Command failed with status: {}", result_ok.status);
+                    eprintln!("Search command failed with status: {}", result_ok.status);
                 }
             }
             Err(command_error) => {
