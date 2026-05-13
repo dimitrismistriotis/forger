@@ -1,6 +1,8 @@
 use std::io::ErrorKind::NotFound;
 use std::process::Command;
 
+use crate::common_strings::FORGE_UNICODE;
+
 #[derive(Debug)]
 struct CommandAndDescription {
     command: &'static str,
@@ -22,13 +24,15 @@ const COMMANDS_TO_CHECK: [CommandAndDescription; 2] = [
 ];
 
 pub fn check_environment() {
+    println!("{FORGE_UNICODE}Check that everything needed for forger to run is available");
+
     for command_to_check in COMMANDS_TO_CHECK {
         println!(
             "Checking {}, {}",
             command_to_check.command, command_to_check.description
         );
 
-        let command_output = Command::new(format!("which {}", command_to_check.command)).output();
+        let command_output = Command::new(command_to_check.command).output();
 
         match command_output {
             Ok(result_ok) => {
@@ -45,13 +49,20 @@ pub fn check_environment() {
                     //}
                 } else {
                     eprintln!("Search command failed with status: {}", result_ok.status);
+                    println!("{:#?}", result_ok);
                 }
             }
             Err(command_error) => {
                 // dbg!(command_error.kind());
                 if command_error.kind() == NotFound {
-                    eprintln!("Could not find {} installed on the system", &command_to_check.command);
-                    eprintln!("Chek their website for installation instructions: {}", &command_to_check.website);
+                    eprintln!(
+                        "Could not find {} installed on the system",
+                        &command_to_check.command
+                    );
+                    eprintln!(
+                        "Check their website for installation instructions: {}",
+                        &command_to_check.website
+                    );
                 } else {
                     eprintln!("{}", command_error);
                 }

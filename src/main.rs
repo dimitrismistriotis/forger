@@ -35,8 +35,6 @@ fn main() {
             create_new_djforge(REPOSITORY_LOCATION, REPOSITORY_DEFAULT_BRANCH, target);
         }
         Commands::Doctor => {
-            println!("Check that everything needed for forger to run is available");
-
             check_environment();
         }
         Commands::ReplacePorts { target } => replace_ports(target),
