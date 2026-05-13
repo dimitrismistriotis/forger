@@ -5,6 +5,7 @@ use crate::common_strings::FORGE_UNICODE;
 
 #[derive(Debug)]
 struct CommandAndDescription {
+    title: &'static str,
     command: &'static str,
     description: &'static str,
     website: &'static str,
@@ -12,12 +13,14 @@ struct CommandAndDescription {
 
 const COMMANDS_TO_CHECK: [CommandAndDescription; 2] = [
     CommandAndDescription {
-        command: "uv",
+        title: "uv",
+        command: "uv -V",
         description: "UV from Astral: An extremely fast Python package and project manager, written in Rust.",
         website: "https://docs.astral.sh/uv/",
     },
     CommandAndDescription {
-        command: "npx",
+        title: "npx",
+        command: "npx --version",
         description: "NPX allows you to execute Node.js packages without permanently installing them globally",
         website: "https://docs.npmjs.com/cli/v11/commands/npx",
     },
@@ -29,10 +32,15 @@ pub fn check_environment() {
     for command_to_check in COMMANDS_TO_CHECK {
         println!(
             "Checking {}, {}",
-            command_to_check.command, command_to_check.description
+            command_to_check.title, command_to_check.description
         );
 
-        let command_output = Command::new(command_to_check.command).output();
+        let mut parts = command_to_check.command.split_whitespace();
+        let program = parts.next().expect("no command given");
+
+        let command_output = Command::new(program)
+            .args(parts) // remaining items become arguments
+            .output();
 
         match command_output {
             Ok(result_ok) => {
@@ -40,7 +48,10 @@ pub fn check_environment() {
                 if result_ok.status.success() {
                     // Convert stdout to string
                     let stdout = String::from_utf8_lossy(&result_ok.stdout);
-                    println!("{} found, output:\n{}", command_to_check.command, stdout);
+                    println!(
+                        "{} found, Executed: {} with output: {}",
+                        command_to_check.title, command_to_check.command, stdout
+                    );
 
                     // Optionally handle stderr
                     // let stderr = String::from_utf8_lossy(&result_ok.stderr);
