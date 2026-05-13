@@ -97,6 +97,10 @@ pub fn create_new_djforge(
     conditionally_replace_ports(target_directory);
 
     check_environment();
+
+    // TODO:
+    // Add a message here that there is a branch in target directory, prompting to customise and
+    // then merge.
 }
 
 /// Wraps replace_ports allowing main function to cal a one-liner
