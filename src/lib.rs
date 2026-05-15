@@ -121,7 +121,7 @@ fn conditionally_replace_ports(target_directory: &str) {
 /// Replace Standard/Dafault Ports
 /// Wraps call to sed with replace parameters, commits after each replace.
 pub fn replace_ports(target_directory: &str) {
-    println!("{FORGE_UNICODE} Optional find and replace for service ports in {target_directory}");
+    println!("{FORGE_UNICODE}Optional find and replace for service ports in {target_directory}");
     for port_and_service in PORTS_AND_SERVICES {
         println!(
             "{} on port {}, replace only mapped port: {}",
