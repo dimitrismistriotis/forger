@@ -98,9 +98,8 @@ pub fn create_new_djforge(
 
     check_environment();
 
-    // TODO:
-    // Add a message here that there is a branch in target directory, prompting to customise and
-    // then merge.
+
+    println!("{FORGE_UNICODE} Application checked out and parametriesed in {target_directory}. Check and merge {target_branch}. You are ready to go!");
 }
 
 /// Wraps replace_ports allowing main function to cal a one-liner
