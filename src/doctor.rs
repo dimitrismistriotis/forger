@@ -40,7 +40,7 @@ pub fn check_environment() {
     for command_to_check in COMMANDS_TO_CHECK {
         println!(
             "Checking {}, {}",
-            command_to_check.title, command_to_check.description
+            command_to_check.title.bold(), command_to_check.description
         );
 
         let mut parts = command_to_check.command.split_whitespace();
@@ -58,7 +58,7 @@ pub fn check_environment() {
                     let stdout = String::from_utf8_lossy(&result_ok.stdout);
                     println!(
                         "{} found, Executed: '{}' with output: {}",
-                        command_to_check.title.bold(),
+                        command_to_check.title,
                         command_to_check.command.italic(),
                         stdout
                     );
