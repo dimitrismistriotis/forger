@@ -21,6 +21,7 @@ enum Commands {
     ReplacePorts {
         target: String,
     },
+    /// Checks that commands needed to run DJForge exist in the system
     Doctor,
 }
 
