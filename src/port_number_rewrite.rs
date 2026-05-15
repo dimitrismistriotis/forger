@@ -1,5 +1,7 @@
 use std::process::Command;
 
+use owo_colors::OwoColorize;
+
 use crate::common_strings::FORGE_UNICODE;
 
 const FILES_WITH_PORT_MAPPING: [&str; 2] = ["docker-compose.yml", ".github/workflows/pytest.yml"];
@@ -66,7 +68,7 @@ pub fn replace_text_in_target_folder(
         } else {
             eprintln!("Command failed with status: {}", output.status);
             let error_message = String::from_utf8_lossy(&output.stderr);
-            eprintln!("Command failed with error: {}", error_message);
+            eprintln!("Command failed with error: {}", error_message.red());
         }
     }
 

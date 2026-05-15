@@ -3,12 +3,13 @@ use std::process;
 
 use git2::Repository;
 use inquire::{Confirm, Text};
+use owo_colors::OwoColorize;
 
 pub mod port_number_rewrite;
 
 mod common_strings;
-mod git_actions;
 pub mod doctor;
+mod git_actions;
 
 use common_strings::FORGE_UNICODE;
 use doctor::check_environment;
@@ -98,8 +99,9 @@ pub fn create_new_djforge(
 
     check_environment();
 
-
-    println!("{FORGE_UNICODE} Application checked out and parametriesed in {target_directory}. Check and merge {target_branch}. You are ready to go!");
+    println!(
+        "{FORGE_UNICODE} Application checked out and parametriesed in {target_directory}. Check and merge {target_branch}. You are ready to go!"
+    );
 }
 
 /// Wraps replace_ports allowing main function to cal a one-liner
@@ -123,7 +125,7 @@ pub fn replace_ports(target_directory: &str) {
     for port_and_service in PORTS_AND_SERVICES {
         println!(
             "{} on port {}, replace only mapped port: {}",
-            port_and_service.service_name,
+            port_and_service.service_name.bold(),
             port_and_service.port_number,
             port_and_service.replace_only_mapped,
         );
@@ -153,7 +155,7 @@ pub fn replace_ports(target_directory: &str) {
                     let commit_message = format!(
                         "Replaced {} port for {} with {}",
                         &port_and_service.port_number,
-                        &port_and_service.service_name,
+                        &port_and_service.service_name.bold(),
                         &provided_port_from_user
                     );
                     match commit_to_directory(target_directory, &commit_message) {

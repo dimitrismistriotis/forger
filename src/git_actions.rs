@@ -10,7 +10,6 @@ pub fn clone_repo(url: &str, path: &str) -> git2::Repository {
     repo
 }
 
-
 pub fn commit_to_directory(
     target_directory: &str,
     commit_message: &str,

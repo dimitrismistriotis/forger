@@ -1,6 +1,8 @@
 use std::io::ErrorKind::NotFound;
 use std::process::Command;
 
+use owo_colors::OwoColorize;
+
 use crate::common_strings::FORGE_UNICODE;
 
 #[derive(Debug)]
@@ -11,7 +13,7 @@ struct CommandAndDescription {
     website: &'static str,
 }
 
-const COMMANDS_TO_CHECK: [CommandAndDescription; 2] = [
+const COMMANDS_TO_CHECK: [CommandAndDescription; 3] = [
     CommandAndDescription {
         title: "uv",
         command: "uv -V",
@@ -24,6 +26,12 @@ const COMMANDS_TO_CHECK: [CommandAndDescription; 2] = [
         description: "NPX allows you to execute Node.js packages without permanently installing them globally",
         website: "https://docs.npmjs.com/cli/v11/commands/npx",
     },
+   CommandAndDescription {
+        title: "docker",
+        command: "docker ps",
+        description: "Supporting services run in dockerised conatiners. Docker needs to be installed and user to belong to appropriate group",
+        website: "https://docs.docker.com/",
+    },
 ];
 
 pub fn check_environment() {
@@ -32,7 +40,7 @@ pub fn check_environment() {
     for command_to_check in COMMANDS_TO_CHECK {
         println!(
             "Checking {}, {}",
-            command_to_check.title, command_to_check.description
+            command_to_check.title.bold(), command_to_check.description
         );
 
         let mut parts = command_to_check.command.split_whitespace();
@@ -49,8 +57,10 @@ pub fn check_environment() {
                     // Convert stdout to string
                     let stdout = String::from_utf8_lossy(&result_ok.stdout);
                     println!(
-                        "{} found, Executed: {} with output: {}",
-                        command_to_check.title, command_to_check.command, stdout
+                        "{} found, Executed: '{}' with output: {}",
+                        command_to_check.title,
+                        command_to_check.command.italic(),
+                        stdout
                     );
 
                     // Optionally handle stderr
@@ -59,7 +69,10 @@ pub fn check_environment() {
                     //    eprintln!("Warnings/Errors:\n{}", stderr);
                     //}
                 } else {
-                    eprintln!("Search command failed with status: {}", result_ok.status);
+                    eprintln!(
+                        "Search command failed with status: {}",
+                        result_ok.status.red()
+                    );
                     println!("{:#?}", result_ok);
                 }
             }
@@ -68,7 +81,7 @@ pub fn check_environment() {
                 if command_error.kind() == NotFound {
                     eprintln!(
                         "Could not find {} installed on the system",
-                        &command_to_check.command
+                        &command_to_check.command.red()
                     );
                     eprintln!(
                         "Check their website for installation instructions: {}",
