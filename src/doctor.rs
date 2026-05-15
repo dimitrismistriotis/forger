@@ -1,6 +1,8 @@
 use std::io::ErrorKind::NotFound;
 use std::process::Command;
 
+use owo_colors::OwoColorize;
+
 use crate::common_strings::FORGE_UNICODE;
 
 #[derive(Debug)]
@@ -49,8 +51,10 @@ pub fn check_environment() {
                     // Convert stdout to string
                     let stdout = String::from_utf8_lossy(&result_ok.stdout);
                     println!(
-                        "{} found, Executed: {} with output: {}",
-                        command_to_check.title, command_to_check.command, stdout
+                        "{} found, Executed: '{}' with output: {}",
+                        command_to_check.title.bold(),
+                        command_to_check.command.italic(),
+                        stdout
                     );
 
                     // Optionally handle stderr
@@ -59,7 +63,10 @@ pub fn check_environment() {
                     //    eprintln!("Warnings/Errors:\n{}", stderr);
                     //}
                 } else {
-                    eprintln!("Search command failed with status: {}", result_ok.status);
+                    eprintln!(
+                        "Search command failed with status: {}",
+                        result_ok.status.red()
+                    );
                     println!("{:#?}", result_ok);
                 }
             }
@@ -68,7 +75,7 @@ pub fn check_environment() {
                 if command_error.kind() == NotFound {
                     eprintln!(
                         "Could not find {} installed on the system",
-                        &command_to_check.command
+                        &command_to_check.command.red()
                     );
                     eprintln!(
                         "Check their website for installation instructions: {}",

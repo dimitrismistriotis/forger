@@ -7,8 +7,8 @@ use inquire::{Confirm, Text};
 pub mod port_number_rewrite;
 
 mod common_strings;
-mod git_actions;
 pub mod doctor;
+mod git_actions;
 
 use common_strings::FORGE_UNICODE;
 use doctor::check_environment;
@@ -98,8 +98,9 @@ pub fn create_new_djforge(
 
     check_environment();
 
-
-    println!("{FORGE_UNICODE} Application checked out and parametriesed in {target_directory}. Check and merge {target_branch}. You are ready to go!");
+    println!(
+        "{FORGE_UNICODE} Application checked out and parametriesed in {target_directory}. Check and merge {target_branch}. You are ready to go!"
+    );
 }
 
 /// Wraps replace_ports allowing main function to cal a one-liner
