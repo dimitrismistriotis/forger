@@ -14,13 +14,9 @@ struct Cli {
 #[derive(Subcommand)]
 enum Commands {
     /// Creates new repository in <target> directory
-    New {
-        target: String,
-    },
+    New { target: String },
     /// Replaces ports for services for cloned repository in <target> directory
-    ReplacePorts {
-        target: String,
-    },
+    ReplacePorts { target: String },
     /// Checks that commands needed to run DJForge exist in the system
     Doctor,
 }

@@ -26,7 +26,7 @@ const COMMANDS_TO_CHECK: [CommandAndDescription; 3] = [
         description: "NPX allows you to execute Node.js packages without permanently installing them globally",
         website: "https://docs.npmjs.com/cli/v11/commands/npx",
     },
-   CommandAndDescription {
+    CommandAndDescription {
         title: "docker",
         command: "docker ps",
         description: "Supporting services run in dockerised conatiners. Docker needs to be installed and user to belong to appropriate group",
@@ -40,7 +40,8 @@ pub fn check_environment() {
     for command_to_check in COMMANDS_TO_CHECK {
         println!(
             "Checking {}, {}",
-            command_to_check.title.bold(), command_to_check.description
+            command_to_check.title.bold(),
+            command_to_check.description
         );
 
         let mut parts = command_to_check.command.split_whitespace();

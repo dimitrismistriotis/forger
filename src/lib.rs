@@ -143,6 +143,15 @@ pub fn replace_ports(target_directory: &str) {
         match port_for_service {
             Ok(provided_port_from_user) => {
                 println!("Provided: {}", provided_port_from_user);
+                let is_numeric = provided_port_from_user.chars().all(|c| c.is_ascii_digit());
+                if !is_numeric {
+                    eprintln!(
+                        "Please provide a digit only value for target port, provided: {}",
+                        provided_port_from_user.red()
+                    );
+                    break;
+                }
+
                 let replace_happened = replace_text_in_target_folder(
                     &target_directory,
                     &target_port_number,
