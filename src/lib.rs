@@ -18,7 +18,7 @@ use port_number_rewrite::replace_text_in_target_folder;
 
 #[derive(Debug)]
 struct PortAndService {
-    port_number: i16,
+    port_number: u16,
     service_name: &'static str,
     replace_only_mapped: bool,
 }
