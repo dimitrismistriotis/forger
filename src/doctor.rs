@@ -27,7 +27,7 @@ const COMMANDS_TO_CHECK: [CommandAndDescription; 2] = [
 ];
 
 pub fn check_environment() {
-    println!("{FORGE_UNICODE}Check that everything needed for forger to run is available");
+    println!("{FORGE_UNICODE}Check that everything needed for forger to run is available.\n");
 
     for command_to_check in COMMANDS_TO_CHECK {
         println!(
