@@ -3,6 +3,7 @@ use std::process;
 
 use git2::Repository;
 use inquire::{Confirm, Text};
+use owo_colors::OwoColorize;
 
 pub mod port_number_rewrite;
 
@@ -124,7 +125,7 @@ pub fn replace_ports(target_directory: &str) {
     for port_and_service in PORTS_AND_SERVICES {
         println!(
             "{} on port {}, replace only mapped port: {}",
-            port_and_service.service_name,
+            port_and_service.service_name.bold(),
             port_and_service.port_number,
             port_and_service.replace_only_mapped,
         );
@@ -154,7 +155,7 @@ pub fn replace_ports(target_directory: &str) {
                     let commit_message = format!(
                         "Replaced {} port for {} with {}",
                         &port_and_service.port_number,
-                        &port_and_service.service_name,
+                        &port_and_service.service_name.bold(),
                         &provided_port_from_user
                     );
                     match commit_to_directory(target_directory, &commit_message) {
