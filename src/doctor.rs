@@ -13,7 +13,7 @@ struct CommandAndDescription {
     website: &'static str,
 }
 
-const COMMANDS_TO_CHECK: [CommandAndDescription; 2] = [
+const COMMANDS_TO_CHECK: [CommandAndDescription; 3] = [
     CommandAndDescription {
         title: "uv",
         command: "uv -V",
@@ -25,6 +25,12 @@ const COMMANDS_TO_CHECK: [CommandAndDescription; 2] = [
         command: "npx --version",
         description: "NPX allows you to execute Node.js packages without permanently installing them globally",
         website: "https://docs.npmjs.com/cli/v11/commands/npx",
+    },
+   CommandAndDescription {
+        title: "docker",
+        command: "docker ps",
+        description: "Supporting services run in dockerised conatiners. Docker needs to be installed and user to belong to appropriate group",
+        website: "https://docs.docker.com/",
     },
 ];
 
