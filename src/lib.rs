@@ -78,7 +78,7 @@ pub fn create_new_djforge(
     target_branch: &'static str,
     target_directory: &str,
 ) {
-    println!("{FORGE_UNICODE} Clone {repository} @ {target_branch} in {target_directory}");
+    println!("{FORGE_UNICODE}Clone {repository} @ {target_branch} in {target_directory}");
 
     // Guard Clauses
 
@@ -100,7 +100,7 @@ pub fn create_new_djforge(
     check_environment();
 
     println!(
-        "{FORGE_UNICODE} Application checked out and parametriesed in {target_directory}. Check and merge {target_branch}. You are ready to go!"
+        "{FORGE_UNICODE}Application checked out and parametriesed in {target_directory}. Check and merge {target_branch}. You are ready to go!"
     );
 }
 
