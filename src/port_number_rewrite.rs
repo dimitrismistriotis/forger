@@ -165,6 +165,8 @@ fn replace_text_in_target_folder_for_port_mapping(
         .arg(format!("s/{}/{}/g", source_port_number, target_port_number))
         .arg(format!("{}", "{}"))
         .arg("+");
+
+    build_sed_command(&mut replace_command);
     println!("Executing: {:?}", replace_command);
 
     let output = replace_command.output().expect("Failed to execute command");
@@ -191,4 +193,8 @@ fn replace_text_in_target_folder_for_port_mapping(
     }
 
     true
+}
+
+fn build_sed_command(command: &mut Command) {
+   command.arg("");
 }
