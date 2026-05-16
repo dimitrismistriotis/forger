@@ -156,16 +156,29 @@ pub fn replace_ports(target_directory: &str) {
                     break;
                 }
 
-                let port_number: u16 = provided_port_from_user.parse::<u16>().unwrap();
+                let parse_port_number = provided_port_from_user.parse::<u16>();
 
-                if port_number < 1 || port_number > MAX_PORT {
-                    eprintln!(
-                        "Please provide a value within range 1 - {}, provided: {}",
-                        MAX_PORT,
-                        provided_port_from_user.red()
-                    );
+                match parse_port_number {
+                    Ok(port_number) => {
+                        if port_number < 1 || port_number > MAX_PORT {
+                            eprintln!(
+                                "Please provide a value within range 1 - {}, provided: {}",
+                                MAX_PORT,
+                                provided_port_from_user.red()
+                            );
 
-                    break;
+                            break;
+                        }
+                    }
+                    Err(e) => {
+                        eprintln!(
+                            "Could not parse target port, provided: {}, Error: {}",
+                            provided_port_from_user.red(),
+                            e
+                        );
+
+                        break;
+                    }
                 }
 
                 let replace_happened = replace_text_in_target_folder(
