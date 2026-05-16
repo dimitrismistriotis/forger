@@ -97,7 +97,6 @@ pub fn create_new_djforge(
     }
 
     let target_repository = clone_repo(repository, target_directory);
-    println!("Empty: {}", target_repository.is_empty().unwrap());
 
     if let Err(e) = checkout_to_post_configuration_branch(target_repository) {
         eprintln!(
