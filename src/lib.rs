@@ -16,6 +16,8 @@ use doctor::check_environment;
 use git_actions::{clone_repo, commit_to_directory};
 use port_number_rewrite::replace_text_in_target_folder;
 
+const MAX_PORT: u16 = 65535;
+
 #[derive(Debug)]
 struct PortAndService {
     port_number: u16,
@@ -130,11 +132,11 @@ pub fn replace_ports(target_directory: &str) {
             port_and_service.replace_only_mapped,
         );
 
-        // TODO: add allowed port range
         let port_prompt = format!(
-            "Which port should be used for {}?",
-            port_and_service.service_name
+            "Which port should be used for {}? Range: 1-{}",
+            port_and_service.service_name, MAX_PORT
         );
+
         // Shadow to string:
         let target_port_number = format!("{}", port_and_service.port_number);
         let port_for_service = Text::new(&port_prompt)
@@ -150,10 +152,21 @@ pub fn replace_ports(target_directory: &str) {
                         "Please provide a digit only value for target port, provided: {}",
                         provided_port_from_user.red()
                     );
+
                     break;
                 }
 
-                // TODO: Check now for port range
+                let port_number: u16 = provided_port_from_user.parse::<u16>().unwrap();
+
+                if port_number < 1 || port_number > MAX_PORT {
+                    eprintln!(
+                        "Please provide a value within range 1 - {}, provided: {}",
+                        MAX_PORT,
+                        provided_port_from_user.red()
+                    );
+
+                    break;
+                }
 
                 let replace_happened = replace_text_in_target_folder(
                     &target_directory,
