@@ -16,9 +16,11 @@ use doctor::check_environment;
 use git_actions::{clone_repo, commit_to_directory};
 use port_number_rewrite::replace_text_in_target_folder;
 
+const MAX_PORT: u16 = 65535;
+
 #[derive(Debug)]
 struct PortAndService {
-    port_number: i16,
+    port_number: u16,
     service_name: &'static str,
     replace_only_mapped: bool,
 }
@@ -78,7 +80,7 @@ pub fn create_new_djforge(
     target_branch: &'static str,
     target_directory: &str,
 ) {
-    println!("{FORGE_UNICODE} Clone {repository} @ {target_branch} in {target_directory}");
+    println!("{FORGE_UNICODE}Clone {repository} @ {target_branch} in {target_directory}");
 
     // Guard Clauses
 
@@ -100,7 +102,7 @@ pub fn create_new_djforge(
     check_environment();
 
     println!(
-        "{FORGE_UNICODE} Application checked out and parametriesed in {target_directory}. Check and merge {target_branch}. You are ready to go!"
+        "{FORGE_UNICODE}Application checked out and parametriesed in {target_directory}. Check and merge {target_branch}. You are ready to go!"
     );
 }
 
@@ -121,7 +123,7 @@ fn conditionally_replace_ports(target_directory: &str) {
 /// Replace Standard/Dafault Ports
 /// Wraps call to sed with replace parameters, commits after each replace.
 pub fn replace_ports(target_directory: &str) {
-    println!("{FORGE_UNICODE} Optional find and replace for service ports in {target_directory}");
+    println!("{FORGE_UNICODE}Optional find and replace for service ports in {target_directory}");
     for port_and_service in PORTS_AND_SERVICES {
         println!(
             "{} on port {}, replace only mapped port: {}",
@@ -131,9 +133,10 @@ pub fn replace_ports(target_directory: &str) {
         );
 
         let port_prompt = format!(
-            "Which port should be used for {}?",
-            port_and_service.service_name
+            "Which port should be used for {}? Range: 1-{}",
+            port_and_service.service_name, MAX_PORT
         );
+
         // Shadow to string:
         let target_port_number = format!("{}", port_and_service.port_number);
         let port_for_service = Text::new(&port_prompt)
@@ -143,6 +146,41 @@ pub fn replace_ports(target_directory: &str) {
         match port_for_service {
             Ok(provided_port_from_user) => {
                 println!("Provided: {}", provided_port_from_user);
+                let is_numeric = provided_port_from_user.chars().all(|c| c.is_ascii_digit());
+                if !is_numeric {
+                    eprintln!(
+                        "Please provide a digit only value for target port, provided: {}",
+                        provided_port_from_user.red()
+                    );
+
+                    break;
+                }
+
+                let parse_port_number = provided_port_from_user.parse::<u16>();
+
+                match parse_port_number {
+                    Ok(port_number) => {
+                        if port_number < 1 || port_number > MAX_PORT {
+                            eprintln!(
+                                "Please provide a value within range 1 - {}, provided: {}",
+                                MAX_PORT,
+                                provided_port_from_user.red()
+                            );
+
+                            break;
+                        }
+                    }
+                    Err(e) => {
+                        eprintln!(
+                            "Could not parse target port, provided: {}, Error: {}",
+                            provided_port_from_user.red(),
+                            e
+                        );
+
+                        break;
+                    }
+                }
+
                 let replace_happened = replace_text_in_target_folder(
                     &target_directory,
                     &target_port_number,
