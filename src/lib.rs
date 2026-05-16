@@ -55,29 +55,33 @@ const PORTS_AND_SERVICES: [PortAndService; 5] = [
 ];
 
 /// Checkout to post-configuration branch
-fn checkout_to_post_configuration_branch(target_repository: Repository) {
+fn checkout_to_post_configuration_branch(
+    target_repository: Repository,
+) -> Result<(), git2::Error> {
     // Source - https://stackoverflow.com/a/56942868
     // Posted by szignal, modified by community. See post 'Timeline' for change history
     // Retrieved 2026-05-02, License - CC BY-SA 4.0
 
-    let head = target_repository.head().unwrap();
-    let oid = head.target().unwrap();
-    let commit = target_repository.find_commit(oid).unwrap();
+    let head = target_repository.head()?;
+    let oid = head
+        .target()
+        .ok_or_else(|| git2::Error::from_str("HEAD has no target OID"))?;
+    let commit = target_repository.find_commit(oid)?;
 
-    let _branch = target_repository.branch(CONFIGURATION_BRANCH_NAME, &commit, false);
+    target_repository.branch(CONFIGURATION_BRANCH_NAME, &commit, false)?;
 
-    let obj = target_repository
-        .revparse_single(&("refs/heads/".to_owned() + CONFIGURATION_BRANCH_NAME))
-        .unwrap();
+    let branch_ref = "refs/heads/".to_owned() + CONFIGURATION_BRANCH_NAME;
+    let obj = target_repository.revparse_single(&branch_ref)?;
 
-    _ = target_repository.checkout_tree(&obj, None);
+    target_repository.checkout_tree(&obj, None)?;
+    target_repository.set_head(&branch_ref)?;
 
-    _ = target_repository.set_head(&("refs/heads/".to_owned() + CONFIGURATION_BRANCH_NAME));
+    Ok(())
 }
 
 pub fn create_new_djforge(
-    repository: &'static str,
-    target_branch: &'static str,
+    repository: &str,
+    target_branch: &str,
     target_directory: &str,
 ) {
     println!("{FORGE_UNICODE}Clone {repository} @ {target_branch} in {target_directory}");
@@ -93,9 +97,14 @@ pub fn create_new_djforge(
     }
 
     let target_repository = clone_repo(repository, target_directory);
-    println!("Empty: {}", target_repository.is_empty().unwrap());
 
-    checkout_to_post_configuration_branch(target_repository);
+    if let Err(e) = checkout_to_post_configuration_branch(target_repository) {
+        eprintln!(
+            "Failed to checkout to configuration branch '{}': {}. The repository at {} may be in an inconsistent state.",
+            CONFIGURATION_BRANCH_NAME, e, target_directory
+        );
+        process::exit(1);
+    }
 
     conditionally_replace_ports(target_directory);
 
