@@ -63,12 +63,6 @@ pub fn check_environment() {
                         command_to_check.command.italic(),
                         stdout
                     );
-
-                    // Optionally handle stderr
-                    // let stderr = String::from_utf8_lossy(&result_ok.stderr);
-                    // if !stderr.is_empty() {
-                    //    eprintln!("Warnings/Errors:\n{}", stderr);
-                    //}
                 } else {
                     eprintln!(
                         "Search command failed with status: {}",
