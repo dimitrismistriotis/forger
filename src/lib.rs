@@ -80,8 +80,8 @@ fn checkout_to_post_configuration_branch(
 }
 
 pub fn create_new_djforge(
-    repository: &'static str,
-    target_branch: &'static str,
+    repository: &str,
+    target_branch: &str,
     target_directory: &str,
 ) {
     println!("{FORGE_UNICODE}Clone {repository} @ {target_branch} in {target_directory}");
