@@ -82,7 +82,7 @@ fn replace_text_in_target_folder_excluding_compose_port_mapping(
 ) -> bool {
     let mut replace_command = Command::new("find");
     replace_command
-        .arg(&target_directory)
+        .arg(target_directory)
         .arg("-type")
         .arg("f")
         .arg("-not")
@@ -144,7 +144,7 @@ fn replace_text_in_target_folder_for_port_mapping(
 ) -> bool {
     let mut replace_command = Command::new("find");
     replace_command
-        .arg(&target_directory)
+        .arg(target_directory)
         .arg("-type")
         .arg("f")
         .arg("-not")
