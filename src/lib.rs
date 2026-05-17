@@ -55,9 +55,7 @@ const PORTS_AND_SERVICES: [PortAndService; 5] = [
 ];
 
 /// Checkout to post-configuration branch
-fn checkout_to_post_configuration_branch(
-    target_repository: Repository,
-) -> Result<(), git2::Error> {
+fn checkout_to_post_configuration_branch(target_repository: Repository) -> Result<(), git2::Error> {
     // Source - https://stackoverflow.com/a/56942868
     // Posted by szignal, modified by community. See post 'Timeline' for change history
     // Retrieved 2026-05-02, License - CC BY-SA 4.0
@@ -79,11 +77,7 @@ fn checkout_to_post_configuration_branch(
     Ok(())
 }
 
-pub fn create_new_djforge(
-    repository: &str,
-    target_branch: &str,
-    target_directory: &str,
-) {
+pub fn create_new_djforge(repository: &str, target_branch: &str, target_directory: &str) {
     println!("{FORGE_UNICODE}Clone {repository} @ {target_branch} in {target_directory}");
 
     // Guard Clauses
@@ -147,7 +141,7 @@ pub fn replace_ports(target_directory: &str) {
         );
 
         // Shadow to string:
-        let target_port_number = format!("{}", port_and_service.port_number);
+        let target_port_number = format!("{}", port_and_service.port_number.blue());
         let port_for_service = Text::new(&port_prompt)
             .with_default(&target_port_number)
             .prompt();
