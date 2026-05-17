@@ -131,7 +131,7 @@ pub fn replace_ports(target_directory: &str) {
         println!(
             "{} on port {}, replace only mapped port: {}",
             port_and_service.service_name.bold(),
-            port_and_service.port_number,
+            port_and_service.port_number.blue(),
             port_and_service.replace_only_mapped,
         );
 
@@ -141,7 +141,7 @@ pub fn replace_ports(target_directory: &str) {
         );
 
         // Shadow to string:
-        let target_port_number = format!("{}", port_and_service.port_number.blue());
+        let target_port_number = format!("{}", port_and_service.port_number);
         let port_for_service = Text::new(&port_prompt)
             .with_default(&target_port_number)
             .prompt();
