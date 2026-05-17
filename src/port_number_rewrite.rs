@@ -174,16 +174,16 @@ fn build_sed_command(
         .arg("./node_modules/*")
         .arg("-not")
         .arg("-name")
-        .arg("uv.lock");
+        .arg("uv.lock")
+        .arg("-not")
+        .arg("-name")
+        .arg("ruff.xml");
  
     if exclude_docker_compose {
         command
             .arg("-not")
             .arg("-name")
             .arg("docker-compose.yml")
-            .arg("-not")
-            .arg("-name")
-            .arg("ruff.xml")
             .arg("-not")
             .arg("-name")
             .arg("pytest.yml")
@@ -195,9 +195,6 @@ fn build_sed_command(
             .arg("+");
     } else {
         command
-            .arg("-not")
-            .arg("-name")
-            .arg("ruff.xml")
             .arg("-exec")
             .arg("sed")
             .arg("-i")
