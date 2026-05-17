@@ -44,7 +44,7 @@ pub fn replace_text_in_target_folder(
             .arg("-i")
             .arg(format!(
                 "s/{}:{}/{}:{}/g",
-                source_port_number, source_port_number, source_port_number, target_port_number
+                source_port_number, source_port_number, target_port_number, source_port_number
             ))
             .arg(&target_location);
 
