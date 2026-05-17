@@ -142,31 +142,7 @@ fn replace_text_in_target_folder_for_port_mapping(
     source_port_number: &str,
     target_port_number: &str,
 ) -> bool {
-    let mut replace_command = Command::new("find");
-    replace_command
-        .arg(target_directory)
-        .arg("-type")
-        .arg("f")
-        .arg("-not")
-        .arg("-path")
-        .arg("./.git/*")
-        .arg("-not")
-        .arg("-path")
-        .arg("./node_modules/*")
-        .arg("-not")
-        .arg("-name")
-        .arg("uv.lock")
-        .arg("-not")
-        .arg("-name")
-        .arg("ruff.xml")
-        .arg("-exec")
-        .arg("sed")
-        .arg("-i")
-        .arg(format!("s/{}/{}/g", source_port_number, target_port_number))
-        .arg(format!("{}", "{}"))
-        .arg("+");
-
-    build_sed_command(&mut replace_command);
+    let mut replace_command = build_sed_command(target_directory, source_port_number, target_port_number);
     println!("Executing: {:?}", replace_command);
 
     let output = replace_command.output().expect("Failed to execute command");
@@ -195,6 +171,30 @@ fn replace_text_in_target_folder_for_port_mapping(
     true
 }
 
-fn build_sed_command(command: &mut Command) {
-   command.arg("");
+fn build_sed_command(target_directory: &str, source_port_number: &str, target_port_number: &str) -> Command {
+    let mut command = Command::new("find");
+    command
+        .arg(target_directory)
+        .arg("-type")
+        .arg("f")
+        .arg("-not")
+        .arg("-path")
+        .arg("./.git/*")
+        .arg("-not")
+        .arg("-path")
+        .arg("./node_modules/*")
+        .arg("-not")
+        .arg("-name")
+        .arg("uv.lock")
+        .arg("-not")
+        .arg("-name")
+        .arg("ruff.xml")
+        .arg("-exec")
+        .arg("sed")
+        .arg("-i")
+        .arg(format!("s/{}/{}/g", source_port_number, target_port_number))
+        .arg(format!("{}", "{}"))
+        .arg("+");
+
+    command
 }
