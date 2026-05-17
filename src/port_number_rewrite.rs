@@ -178,7 +178,7 @@ fn build_sed_command(
         .arg("-not")
         .arg("-name")
         .arg("ruff.xml");
- 
+
     if exclude_docker_compose {
         command
             .arg("-not")
@@ -186,22 +186,16 @@ fn build_sed_command(
             .arg("docker-compose.yml")
             .arg("-not")
             .arg("-name")
-            .arg("pytest.yml")
-            .arg("-exec")
-            .arg("sed")
-            .arg("-i")
-            .arg(format!("s/{}/{}/g", source_port_number, target_port_number))
-            .arg(format!("{}", "{}"))
-            .arg("+");
-    } else {
-        command
-            .arg("-exec")
-            .arg("sed")
-            .arg("-i")
-            .arg(format!("s/{}/{}/g", source_port_number, target_port_number))
-            .arg(format!("{}", "{}"))
-            .arg("+");
+            .arg("pytest.yml");
     }
+
+    command
+        .arg("-exec")
+        .arg("sed")
+        .arg("-i")
+        .arg(format!("s/{}/{}/g", source_port_number, target_port_number))
+        .arg(format!("{}", "{}"))
+        .arg("+");
 
     command
 }
