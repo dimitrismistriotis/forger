@@ -13,7 +13,7 @@ struct CommandAndDescription {
     website: &'static str,
 }
 
-const COMMANDS_TO_CHECK: [CommandAndDescription; 3] = [
+const COMMANDS_TO_CHECK: [CommandAndDescription; 4] = [
     CommandAndDescription {
         title: "uv",
         command: "uv -V",
@@ -32,6 +32,12 @@ const COMMANDS_TO_CHECK: [CommandAndDescription; 3] = [
         description: "Supporting services run in dockerised conatiners. Docker needs to be installed and user to belong to appropriate group",
         website: "https://docs.docker.com/",
     },
+    CommandAndDescription {
+        title: "make",
+        command: "make --version",
+        description: "make - GNU make utility to maintain groups of programs, using it as a wrapper to different Django and other commands",
+        website: "http://man7.org/linux/man-pages/man1/make.1.html",
+    }
 ];
 
 pub fn check_environment() {
