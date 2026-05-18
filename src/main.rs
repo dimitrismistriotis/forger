@@ -19,6 +19,8 @@ enum Commands {
     ReplacePorts { target: String },
     /// Checks that commands needed to run DJForge exist in the system
     Doctor,
+    /// Generate prelimilary .env with Secret Key so that the application can run
+    GenerateDotEnv { target: String },
 }
 
 const REPOSITORY_LOCATION: &str = "https://github.com/dimitrismistriotis/djforge.git";
@@ -35,5 +37,8 @@ fn main() {
             check_environment();
         }
         Commands::ReplacePorts { target } => replace_ports(target),
+        Commands::GenerateDotEnv { target } => {
+            println!("Placeholer for {target}");
+        },
     }
 }
