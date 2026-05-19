@@ -126,7 +126,7 @@ fn conditionally_replace_ports(target_directory: &str) {
 /// Replace Standard/Dafault Ports
 /// Wraps call to sed with replace parameters, commits after each replace.
 pub fn replace_ports(target_directory: &str) {
-    println!("{FORGE_UNICODE}Optional find and replace for service ports in {target_directory}");
+    println!("{FORGE_UNICODE}Optional find and replace for service ports in {}", target_directory.bold());
     for port_and_service in PORTS_AND_SERVICES {
         println!(
             "{} on port {}, replace only mapped port: {}",
@@ -208,4 +208,10 @@ pub fn replace_ports(target_directory: &str) {
             Err(_) => println!("An error happened when asking for target port."),
         }
     }
+}
+
+/// Creates .env using DJForge's make if not there in target_directory
+pub fn create_dot_env(target_directory: &str) {
+    println!("{FORGE_UNICODE}Create .env in {} if not there, using DJForge's make command", target_directory.bold());
+
 }

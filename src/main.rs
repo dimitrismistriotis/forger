@@ -1,7 +1,7 @@
 use clap::{Parser, Subcommand};
 
 use forger::doctor::check_environment;
-use forger::{create_new_djforge, replace_ports};
+use forger::{create_new_djforge, replace_ports, create_dot_env};
 
 #[derive(Parser)]
 #[command(version, about, long_about = None)]
@@ -38,7 +38,7 @@ fn main() {
         }
         Commands::ReplacePorts { target } => replace_ports(target),
         Commands::GenerateDotEnv { target } => {
-            println!("Placeholer for {target}");
+            create_dot_env(target);
         },
     }
 }
