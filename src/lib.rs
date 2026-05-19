@@ -128,7 +128,10 @@ fn conditionally_replace_ports(target_directory: &str) {
 /// Replace Standard/Dafault Ports
 /// Wraps call to sed with replace parameters, commits after each replace.
 pub fn replace_ports(target_directory: &str) {
-    println!("{FORGE_UNICODE}Optional find and replace for service ports in {}", target_directory.bold());
+    println!(
+        "{FORGE_UNICODE}Optional find and replace for service ports in {}",
+        target_directory.bold()
+    );
     for port_and_service in PORTS_AND_SERVICES {
         println!(
             "{} on port {}, replace only mapped port: {}",
@@ -225,17 +228,25 @@ fn conditionally_create_dot_env(target_directory: &str) {
     }
 }
 
-
 /// Creates .env using DJForge's make if not there in target_directory
 pub fn create_dot_env(target_directory: &str) {
-    println!("{FORGE_UNICODE}Create .env in {} if not there, using DJForge's make command", target_directory.bold());
+    println!(
+        "{FORGE_UNICODE}Create .env in {} if not there, using DJForge's make command",
+        target_directory.bold()
+    );
 
-    let dot_env_location = format!("{}/{}", target_directory, ".env");
+    let dot_env_location = format!(
+        "{}/{}",
+        target_directory
+            .strip_suffix("/")
+            .unwrap_or(target_directory),
+        ".env"
+    );
     let dot_env_path = Path::new(&dot_env_location);
     if dot_env_path.exists() {
         println!("{} already exists, continuing.", dot_env_location.bold());
 
-        return
+        return;
     }
 
     // TODO:

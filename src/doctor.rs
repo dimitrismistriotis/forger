@@ -37,7 +37,7 @@ const COMMANDS_TO_CHECK: [CommandAndDescription; 4] = [
         command: "make --version",
         description: "make - GNU make utility to maintain groups of programs, using it as a wrapper to different Django and other commands",
         website: "http://man7.org/linux/man-pages/man1/make.1.html",
-    }
+    },
 ];
 
 pub fn check_environment() {
