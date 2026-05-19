@@ -230,7 +230,14 @@ fn conditionally_create_dot_env(target_directory: &str) {
 pub fn create_dot_env(target_directory: &str) {
     println!("{FORGE_UNICODE}Create .env in {} if not there, using DJForge's make command", target_directory.bold());
 
-    // TODO: 
-    // Check if .env exists in target_directory, if true return
+    let dot_env_location = format!("{}/{}", target_directory, ".env");
+    let dot_env_path = Path::new(&dot_env_location);
+    if dot_env_path.exists() {
+        println!("{} already exists, continuing.", dot_env_location.bold());
+
+        return
+    }
+
+    // TODO:
     // if not cd there and run `make create_dot_env_file`
 }
