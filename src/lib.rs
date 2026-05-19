@@ -214,4 +214,7 @@ pub fn replace_ports(target_directory: &str) {
 pub fn create_dot_env(target_directory: &str) {
     println!("{FORGE_UNICODE}Create .env in {} if not there, using DJForge's make command", target_directory.bold());
 
+    // TODO: 
+    // Check if .env exists in target_directory, if true return
+    // if not cd there and run `make create_dot_env_file`
 }
