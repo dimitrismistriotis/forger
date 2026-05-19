@@ -194,7 +194,7 @@ fn build_sed_command(
         .arg("sed")
         .arg("-i")
         .arg(format!("s/{}/{}/g", source_port_number, target_port_number))
-        .arg(format!("{}", "{}"))
+        .arg("{}")
         .arg("+");
 
     command
