@@ -1,5 +1,6 @@
 use std::path::Path;
 use std::process;
+use std::process::Command;
 
 use git2::Repository;
 use inquire::{Confirm, Text};
@@ -104,6 +105,8 @@ pub fn create_new_djforge(repository: &str, target_branch: &str, target_director
 
     check_environment();
 
+    conditionally_create_dot_env(target_directory);
+
     println!(
         "{FORGE_UNICODE}Application checked out and parametriesed in {target_directory}. Check and merge {target_branch}. You are ready to go!"
     );
@@ -126,7 +129,10 @@ fn conditionally_replace_ports(target_directory: &str) {
 /// Replace Standard/Dafault Ports
 /// Wraps call to sed with replace parameters, commits after each replace.
 pub fn replace_ports(target_directory: &str) {
-    println!("{FORGE_UNICODE}Optional find and replace for service ports in {target_directory}");
+    println!(
+        "{FORGE_UNICODE}Optional find and replace for service ports in {}",
+        target_directory.bold()
+    );
     for port_and_service in PORTS_AND_SERVICES {
         println!(
             "{} on port {}, replace only mapped port: {}",
@@ -207,5 +213,64 @@ pub fn replace_ports(target_directory: &str) {
             }
             Err(_) => println!("An error happened when asking for target port."),
         }
+    }
+}
+/// Wraps create_dot_env allowing main function to cal a one-liner
+fn conditionally_create_dot_env(target_directory: &str) {
+    let port_rename_prompt = Confirm::new("Continue with .env creation?")
+        .with_default(true)
+        .with_help_message("Generates a skeletal .env so that the appplication can run, you can skip and create one on your own or run `make create_dot_env_file`")
+        .prompt();
+
+    match port_rename_prompt {
+        Ok(true) => create_dot_env(target_directory),
+        Ok(false) => println!("Continuing without .env creation"),
+        Err(_) => println!("Error with .env creation"),
+    }
+}
+
+/// Creates .env using DJForge's make if not there in target_directory
+pub fn create_dot_env(target_directory: &str) {
+    println!(
+        "{FORGE_UNICODE}Create .env in {} if not there, using DJForge's make command",
+        target_directory.bold()
+    );
+
+    let dot_env_location = format!(
+        "{}/{}",
+        target_directory
+            .strip_suffix("/")
+            .unwrap_or(target_directory),
+        ".env"
+    );
+    let dot_env_path = Path::new(&dot_env_location);
+    if dot_env_path.exists() {
+        println!("{} already exists, continuing.", dot_env_location.bold());
+
+        return;
+    }
+
+    // if not cd there and run `make create_dot_env_file`
+    let make_output = Command::new("make")
+        .current_dir(target_directory)
+        .arg("create_dot_env_file")
+        .output()
+        .expect("Failed to execute make create_dot_env_file command");
+
+    // Check exit status
+    if make_output.status.success() {
+        // Convert stdout to string
+        let stdout = String::from_utf8_lossy(&make_output.stdout);
+        println!("Success! Output:\n{}", stdout);
+
+        // Optionally handle stderr
+        let stderr = String::from_utf8_lossy(&make_output.stderr);
+        if !stderr.is_empty() {
+            eprintln!("Warnings/Errors:\n{}", stderr);
+        }
+    } else {
+        eprintln!("Make command failed with status: {}", make_output.status);
+        let error_message = String::from_utf8_lossy(&make_output.stderr);
+        eprintln!("Make command failed with error: {}", error_message);
     }
 }
