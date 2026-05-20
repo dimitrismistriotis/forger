@@ -1,5 +1,5 @@
+use std::error::Error;
 use std::path::Path;
-use std::process;
 use std::process::Command;
 
 use git2::Repository;
@@ -78,7 +78,11 @@ fn checkout_to_post_configuration_branch(target_repository: Repository) -> Resul
     Ok(())
 }
 
-pub fn create_new_djforge(repository: &str, target_branch: &str, target_directory: &str) {
+pub fn create_new_djforge(
+    repository: &str,
+    target_branch: &str,
+    target_directory: &str,
+) -> Result<(), Box<dyn Error>> {
     println!("{FORGE_UNICODE}Clone {repository} @ {target_branch} in {target_directory}");
 
     // Guard Clauses
@@ -87,19 +91,17 @@ pub fn create_new_djforge(repository: &str, target_branch: &str, target_director
     // check if the target directory is a repository and continue from there
     let path = Path::new(target_directory);
     if path.is_dir() {
-        println!("\nDirectory {target_directory} already exists, exiting...");
-        process::exit(1);
+        return Err(format!("Directory {target_directory} already exists").into());
     }
 
-    let target_repository = clone_repo(repository, target_directory);
+    let target_repository = clone_repo(repository, target_directory)?;
 
-    if let Err(e) = checkout_to_post_configuration_branch(target_repository) {
-        eprintln!(
-            "Failed to checkout to configuration branch '{}': {}. The repository at {} may be in an inconsistent state.",
-            CONFIGURATION_BRANCH_NAME, e, target_directory
-        );
-        process::exit(1);
-    }
+    checkout_to_post_configuration_branch(target_repository).map_err(|e| {
+        format!(
+            "Failed to checkout to configuration branch '{CONFIGURATION_BRANCH_NAME}': {e}. \
+             The repository at {target_directory} may be in an inconsistent state."
+        )
+    })?;
 
     conditionally_replace_ports(target_directory);
 
@@ -110,6 +112,7 @@ pub fn create_new_djforge(repository: &str, target_branch: &str, target_director
     println!(
         "{FORGE_UNICODE}Application checked out and parametriesed in {target_directory}. Check and merge {target_branch}. You are ready to go!"
     );
+    Ok(())
 }
 
 /// Wraps replace_ports allowing main function to cal a one-liner
