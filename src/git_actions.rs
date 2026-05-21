@@ -1,13 +1,10 @@
 use git2::{IndexAddOption, Repository};
 
-pub fn clone_repo(url: &str, path: &str) -> git2::Repository {
-    let repo = match Repository::clone(url, path) {
-        Ok(repo) => repo,
-        Err(e) => panic!("Failed to clone: {}", e),
-    };
+pub fn clone_repo(url: &str, path: &str) -> Result<Repository, git2::Error> {
+    let repo = Repository::clone(url, path)?;
     println!("Cloned {} to {}", url, path);
 
-    repo
+    Ok(repo)
 }
 
 pub fn commit_to_directory(

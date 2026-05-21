@@ -31,7 +31,10 @@ fn main() {
 
     match &cli.command {
         Commands::New { target } => {
-            create_new_djforge(REPOSITORY_LOCATION, REPOSITORY_DEFAULT_BRANCH, target);
+            if let Err(e) = create_new_djforge(REPOSITORY_LOCATION, REPOSITORY_DEFAULT_BRANCH, target) {
+                eprintln!("{e}");
+                std::process::exit(1);
+            }
         }
         Commands::Doctor => {
             check_environment();
