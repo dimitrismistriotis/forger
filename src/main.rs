@@ -46,7 +46,7 @@ fn main() {
         Commands::Doctor => {
             check_environment(cli.verbose);
         }
-        Commands::ReplacePorts { target } => replace_ports(target),
+        Commands::ReplacePorts { target } => replace_ports(target, cli.verbose),
         Commands::GenerateDotEnv { target } => {
             create_dot_env(target);
         }

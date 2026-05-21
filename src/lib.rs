@@ -104,7 +104,7 @@ pub fn create_new_djforge(
         )
     })?;
 
-    conditionally_replace_ports(target_directory);
+    conditionally_replace_ports(target_directory, verbose);
 
     check_environment(verbose);
 
@@ -117,14 +117,14 @@ pub fn create_new_djforge(
 }
 
 /// Wraps replace_ports allowing main function to cal a one-liner
-fn conditionally_replace_ports(target_directory: &str) {
+fn conditionally_replace_ports(target_directory: &str, verbose: bool) {
     let port_rename_prompt = Confirm::new("Continue with Port rename?")
         .with_default(true)
         .with_help_message("Find/Replace in target directory of default ports for Database and other services. Aims to allow multiple installations running together")
         .prompt();
 
     match port_rename_prompt {
-        Ok(true) => replace_ports(target_directory),
+        Ok(true) => replace_ports(target_directory, verbose),
         Ok(false) => println!("Continuing without port rename"),
         Err(_) => println!("Error with Port renaming"),
     }
@@ -132,7 +132,7 @@ fn conditionally_replace_ports(target_directory: &str) {
 
 /// Replace Standard/Dafault Ports
 /// Wraps call to sed with replace parameters, commits after each replace.
-pub fn replace_ports(target_directory: &str) {
+pub fn replace_ports(target_directory: &str, verbose: bool) {
     println!(
         "{FORGE_UNICODE}Optional find and replace for service ports in {}",
         target_directory.bold()
