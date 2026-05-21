@@ -33,13 +33,18 @@ fn main() {
 
     match &cli.command {
         Commands::New { target } => {
-            if let Err(e) = create_new_djforge(REPOSITORY_LOCATION, REPOSITORY_DEFAULT_BRANCH, target, cli.verbose) {
+            if let Err(e) = create_new_djforge(
+                REPOSITORY_LOCATION,
+                REPOSITORY_DEFAULT_BRANCH,
+                target,
+                cli.verbose,
+            ) {
                 eprintln!("{e}");
                 std::process::exit(1);
             }
         }
         Commands::Doctor => {
-            check_environment();
+            check_environment(cli.verbose);
         }
         Commands::ReplacePorts { target } => replace_ports(target),
         Commands::GenerateDotEnv { target } => {

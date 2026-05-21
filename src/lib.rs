@@ -106,7 +106,7 @@ pub fn create_new_djforge(
 
     conditionally_replace_ports(target_directory);
 
-    check_environment();
+    check_environment(verbose);
 
     conditionally_create_dot_env(target_directory);
 
