@@ -20,13 +20,11 @@ pub fn replace_text_in_target_folder(
     }
 
     if replace_only_mapped_port {
-        replace_text_in_target_folder_for_port_mapping(
+        return replace_text_in_target_folder_for_port_mapping(
             target_directory,
             source_port_number,
             target_port_number,
         );
-
-        return true;
     }
 
     replace_text_in_target_folder_excluding_compose_port_mapping(
