@@ -82,6 +82,7 @@ pub fn create_new_djforge(
     repository: &str,
     target_branch: &str,
     target_directory: &str,
+    verbose: bool,
 ) -> Result<(), Box<dyn Error>> {
     println!("{FORGE_UNICODE}Clone {repository} @ {target_branch} in {target_directory}");
 
@@ -91,7 +92,7 @@ pub fn create_new_djforge(
     // check if the target directory is a repository and continue from there
     let path = Path::new(target_directory);
     if path.is_dir() {
-        return Err(format!("Directory {target_directory} already exists").into());
+        return Err(format!("Directory {} already exists", target_directory.bold()).into());
     }
 
     let target_repository = clone_repo(repository, target_directory)?;

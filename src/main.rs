@@ -9,6 +9,8 @@ use forger::{create_dot_env, create_new_djforge, replace_ports};
 struct Cli {
     #[command(subcommand)]
     command: Commands,
+    #[arg(short, long)]
+    verbose: bool,
 }
 
 #[derive(Subcommand)]
@@ -31,7 +33,7 @@ fn main() {
 
     match &cli.command {
         Commands::New { target } => {
-            if let Err(e) = create_new_djforge(REPOSITORY_LOCATION, REPOSITORY_DEFAULT_BRANCH, target) {
+            if let Err(e) = create_new_djforge(REPOSITORY_LOCATION, REPOSITORY_DEFAULT_BRANCH, target, cli.verbose) {
                 eprintln!("{e}");
                 std::process::exit(1);
             }
