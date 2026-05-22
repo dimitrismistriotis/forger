@@ -268,9 +268,10 @@ pub fn create_dot_env(target_directory: &str, verbose: bool) {
 
     // Check exit status
     if make_output.status.success() {
-        // Convert stdout to string
-        let stdout = String::from_utf8_lossy(&make_output.stdout);
-        println!("Success! Output:\n{}", stdout);
+        if verbose {
+            let stdout = String::from_utf8_lossy(&make_output.stdout);
+            println!("Success! Output:\n{}", stdout);
+        }
 
         // Optionally handle stderr
         let stderr = String::from_utf8_lossy(&make_output.stderr);
@@ -279,6 +280,7 @@ pub fn create_dot_env(target_directory: &str, verbose: bool) {
         }
     } else {
         eprintln!("Make command failed with status: {}", make_output.status);
+
         let error_message = String::from_utf8_lossy(&make_output.stderr);
         eprintln!("Make command failed with error: {}", error_message);
     }
