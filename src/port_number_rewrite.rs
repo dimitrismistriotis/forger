@@ -11,11 +11,13 @@ pub fn replace_text_in_target_folder(
     source_port_number: &str,
     target_port_number: &str,
     replace_only_mapped_port: bool,
+    verbose: bool,
 ) -> bool {
-    println!("{FORGE_UNICODE}Inside port replacer {source_port_number} ➡️ {target_port_number}");
+    println!("{FORGE_UNICODE}Port replacer {source_port_number} ➡️ {target_port_number}");
 
     if source_port_number == target_port_number {
         println!("No change in ports, continuing...");
+
         return false;
     }
 

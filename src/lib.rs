@@ -158,7 +158,10 @@ pub fn replace_ports(target_directory: &str, verbose: bool) {
 
         match port_for_service {
             Ok(provided_port_from_user) => {
-                println!("Provided: {}", provided_port_from_user);
+                if verbose {
+                    println!("Provided: {}", provided_port_from_user);
+                }
+
                 let is_numeric = provided_port_from_user.chars().all(|c| c.is_ascii_digit());
                 if !is_numeric {
                     eprintln!(
@@ -179,7 +182,6 @@ pub fn replace_ports(target_directory: &str, verbose: bool) {
                                 MAX_PORT,
                                 provided_port_from_user.red()
                             );
-
                             break;
                         }
                     }
@@ -199,6 +201,7 @@ pub fn replace_ports(target_directory: &str, verbose: bool) {
                     &target_port_number,
                     &provided_port_from_user,
                     port_and_service.replace_only_mapped,
+                    verbose,
                 );
 
                 if replace_happened {
@@ -219,6 +222,7 @@ pub fn replace_ports(target_directory: &str, verbose: bool) {
         }
     }
 }
+
 /// Wraps create_dot_env allowing main function to cal a one-liner
 fn conditionally_create_dot_env(target_directory: &str) {
     let port_rename_prompt = Confirm::new("Continue with .env creation?")
