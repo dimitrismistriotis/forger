@@ -69,7 +69,7 @@ pub fn check_environment(verbose: bool) {
                             stdout
                         );
                     } else {
-                        println!("found");
+                        println!("Found ✅");
                     }
                 } else {
                     eprintln!(

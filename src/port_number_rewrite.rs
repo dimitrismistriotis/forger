@@ -34,6 +34,7 @@ pub fn replace_text_in_target_folder(
         target_directory,
         source_port_number,
         target_port_number,
+        verbose,
     );
 
     for file_with_port_mapping in FILES_WITH_PORT_MAPPING {
@@ -80,6 +81,7 @@ fn replace_text_in_target_folder_excluding_compose_port_mapping(
     target_directory: &str,
     source_port_number: &str,
     target_port_number: &str,
+    verbose: bool,
 ) -> bool {
     let mut replace_command = build_sed_command(
         target_directory,
@@ -88,15 +90,19 @@ fn replace_text_in_target_folder_excluding_compose_port_mapping(
         true,
     );
 
-    println!("Executing: {:?}", replace_command);
+    if verbose {
+        println!("Executing: {:?}", replace_command);
+    }
 
     let output = replace_command.output().expect("Failed to execute command");
 
     // Check exit status
     if output.status.success() {
-        // Convert stdout to string
-        let stdout = String::from_utf8_lossy(&output.stdout);
-        println!("Success! Output:\n{}", stdout);
+        if verbose {
+            // Convert stdout to string
+            let stdout = String::from_utf8_lossy(&output.stdout);
+            println!("Success! Output:\n{}", stdout);
+        }
 
         // Optionally handle stderr
         let stderr = String::from_utf8_lossy(&output.stderr);

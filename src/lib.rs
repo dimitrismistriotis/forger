@@ -182,6 +182,7 @@ pub fn replace_ports(target_directory: &str, verbose: bool) {
                                 MAX_PORT,
                                 provided_port_from_user.red()
                             );
+
                             break;
                         }
                     }
