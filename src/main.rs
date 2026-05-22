@@ -48,7 +48,7 @@ fn main() {
         }
         Commands::ReplacePorts { target } => replace_ports(target, cli.verbose),
         Commands::GenerateDotEnv { target } => {
-            create_dot_env(target);
+            create_dot_env(target, cli.verbose);
         }
     }
 }

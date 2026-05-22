@@ -108,7 +108,7 @@ pub fn create_new_djforge(
 
     check_environment(verbose);
 
-    conditionally_create_dot_env(target_directory);
+    conditionally_create_dot_env(target_directory, verbose);
 
     println!(
         "{FORGE_UNICODE}Application checked out and parametriesed in {target_directory}. Check and merge {target_branch}. You are ready to go!"
@@ -225,21 +225,21 @@ pub fn replace_ports(target_directory: &str, verbose: bool) {
 }
 
 /// Wraps create_dot_env allowing main function to cal a one-liner
-fn conditionally_create_dot_env(target_directory: &str) {
+fn conditionally_create_dot_env(target_directory: &str, verbose: bool) {
     let port_rename_prompt = Confirm::new("Continue with .env creation?")
         .with_default(true)
         .with_help_message("Generates a skeletal .env so that the appplication can run, you can skip and create one on your own or run `make create_dot_env_file`")
         .prompt();
 
     match port_rename_prompt {
-        Ok(true) => create_dot_env(target_directory),
+        Ok(true) => create_dot_env(target_directory, verbose),
         Ok(false) => println!("Continuing without .env creation"),
         Err(_) => println!("Error with .env creation"),
     }
 }
 
 /// Creates .env using DJForge's make if not there in target_directory
-pub fn create_dot_env(target_directory: &str) {
+pub fn create_dot_env(target_directory: &str, verbose: bool) {
     println!(
         "{FORGE_UNICODE}Create .env in {} if not there, using DJForge's make command",
         target_directory.bold()
