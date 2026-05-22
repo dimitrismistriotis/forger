@@ -205,13 +205,13 @@ pub fn replace_ports(target_directory: &str, verbose: bool) {
                 );
 
                 if replace_happened {
-                    // Commit the changes
                     let commit_message = format!(
                         "Replaced {} port for {} with {}",
                         &port_and_service.port_number,
                         &port_and_service.service_name.bold(),
                         &provided_port_from_user
                     );
+
                     match commit_to_directory(target_directory, &commit_message) {
                         Ok(_) => println!("Committed: {}", commit_message),
                         Err(e) => println!("Failed to commit: {}", e),
