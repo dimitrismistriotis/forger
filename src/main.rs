@@ -51,10 +51,7 @@ fn main() {
         }
         Commands::ReplacePorts { target } => replace_ports(target, cli.verbose),
         Commands::ReplaceNetworkInDockerCompose { target } => {
-            let context = ApplicationContext {
-                target: target.to_string(),
-                verbose: cli.verbose,
-            };
+            let context = ApplicationContext::new(target.to_string(), cli.verbose);
 
             replace_network_in_docker_compose(context);
         },

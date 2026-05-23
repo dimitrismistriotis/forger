@@ -301,8 +301,8 @@ pub fn create_dot_env(target_directory: &str, verbose: bool) {
 pub fn replace_network_in_docker_compose(context: ApplicationContext) {
     println!("Context: {:?}", context);
 
-    if context.verbose {
-        println!("Working with {}", context.target);
+    if context.verbose() {
+        println!("Working with {}", context.target());
     }
 
     // TODO:
