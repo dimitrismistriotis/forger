@@ -139,10 +139,9 @@ pub fn replace_ports(target_directory: &str, verbose: bool) {
     );
     for port_and_service in PORTS_AND_SERVICES {
         println!(
-            "{} on port {}, replace only mapped port: {}",
+            "{} on port {}",
             port_and_service.service_name.bold(),
             port_and_service.port_number.blue(),
-            port_and_service.replace_only_mapped,
         );
 
         let port_prompt = format!(
