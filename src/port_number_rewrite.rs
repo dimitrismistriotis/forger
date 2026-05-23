@@ -61,7 +61,7 @@ pub fn replace_text_in_target_folder(
         // Check exit status
         if output.status.success() {
             if verbose {
-            // Convert stdout to string
+                // Convert stdout to string
                 let stdout = String::from_utf8_lossy(&output.stdout);
                 println!("Success! Output:\n{}", stdout);
             }

@@ -111,7 +111,9 @@ pub fn create_new_djforge(
     conditionally_create_dot_env(target_directory, verbose);
 
     println!(
-        "{FORGE_UNICODE}Application checked out and parametriesed in {target_directory}. Check and merge {target_branch}. You are ready to go!"
+        "{FORGE_UNICODE}Application checked out and parametriesed in {}. Check and merge {}. You are ready to go!",
+        target_directory.bold(),
+        target_branch.bold()
     );
     Ok(())
 }
@@ -138,11 +140,20 @@ pub fn replace_ports(target_directory: &str, verbose: bool) {
         target_directory.bold()
     );
     for port_and_service in PORTS_AND_SERVICES {
-        println!(
-            "{} on port {}",
-            port_and_service.service_name.bold(),
-            port_and_service.port_number.blue(),
-        );
+        if verbose {
+            println!(
+                "{} on port {} replace only mapped port: {}",
+                port_and_service.service_name.bold(),
+                port_and_service.port_number.blue(),
+                port_and_service.replace_only_mapped,
+            );
+        } else {
+            println!(
+                "{} on port {}",
+                port_and_service.service_name.bold(),
+                port_and_service.port_number.blue(),
+            );
+        }
 
         let port_prompt = format!(
             "Which port should be used for {}? Range: 1-{}",
