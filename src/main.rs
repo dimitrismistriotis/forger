@@ -19,6 +19,8 @@ enum Commands {
     New { target: String },
     /// Replaces ports for services for cloned repository in <target> directory
     ReplacePorts { target: String },
+    /// Repplaces network tag inside docer-compose.yml in <target> directory
+    ReplaceNetworkInDockerCompose  { target: String },
     /// Checks that commands needed to run DJForge exist in the system
     Doctor,
     /// Generate prelimilary .env with Secret Key so that the application can run
@@ -47,6 +49,7 @@ fn main() {
             check_environment(cli.verbose);
         }
         Commands::ReplacePorts { target } => replace_ports(target, cli.verbose),
+        Commands::ReplaceNetworkInDockerCompose { target } => replace_ports(target, cli.verbose),
         Commands::GenerateDotEnv { target } => {
             create_dot_env(target, cli.verbose);
         }
