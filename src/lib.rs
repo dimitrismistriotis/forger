@@ -304,4 +304,8 @@ pub fn replace_network_in_docker_compose(context: ApplicationContext) {
     if context.verbose {
         println!("Working with {}", context.target);
     }
+
+    // TODO:
+    // SED docker compose yaml in tearget to rename the newtwork avoiding conflicts
+    // Add this method to the base run-all one
 }
