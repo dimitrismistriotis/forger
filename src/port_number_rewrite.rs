@@ -50,7 +50,9 @@ pub fn replace_text_in_target_folder(
             ))
             .arg(&target_location);
 
-        println!("Executing: {:?}", replace_command);
+        if verbose {
+            println!("Executing: {:?}", replace_command);
+        }
 
         let output = replace_command
             .output()
@@ -58,9 +60,11 @@ pub fn replace_text_in_target_folder(
 
         // Check exit status
         if output.status.success() {
+            if verbose {
             // Convert stdout to string
-            let stdout = String::from_utf8_lossy(&output.stdout);
-            println!("Success! Output:\n{}", stdout);
+                let stdout = String::from_utf8_lossy(&output.stdout);
+                println!("Success! Output:\n{}", stdout);
+            }
 
             // Optionally handle stderr
             let stderr = String::from_utf8_lossy(&output.stderr);
