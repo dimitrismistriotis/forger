@@ -82,6 +82,7 @@ pub fn create_new_djforge(
     repository: &str,
     target_branch: &str,
     target_directory: &str,
+    verbose: bool,
 ) -> Result<(), Box<dyn Error>> {
     println!("{FORGE_UNICODE}Clone {repository} @ {target_branch} in {target_directory}");
 
@@ -91,7 +92,7 @@ pub fn create_new_djforge(
     // check if the target directory is a repository and continue from there
     let path = Path::new(target_directory);
     if path.is_dir() {
-        return Err(format!("Directory {target_directory} already exists").into());
+        return Err(format!("Directory {} already exists", target_directory.bold()).into());
     }
 
     let target_repository = clone_repo(repository, target_directory)?;
@@ -103,11 +104,11 @@ pub fn create_new_djforge(
         )
     })?;
 
-    conditionally_replace_ports(target_directory);
+    conditionally_replace_ports(target_directory, verbose);
 
-    check_environment();
+    check_environment(verbose);
 
-    conditionally_create_dot_env(target_directory);
+    conditionally_create_dot_env(target_directory, verbose);
 
     println!(
         "{FORGE_UNICODE}Application checked out and parametriesed in {target_directory}. Check and merge {target_branch}. You are ready to go!"
@@ -116,14 +117,14 @@ pub fn create_new_djforge(
 }
 
 /// Wraps replace_ports allowing main function to cal a one-liner
-fn conditionally_replace_ports(target_directory: &str) {
+fn conditionally_replace_ports(target_directory: &str, verbose: bool) {
     let port_rename_prompt = Confirm::new("Continue with Port rename?")
         .with_default(true)
         .with_help_message("Find/Replace in target directory of default ports for Database and other services. Aims to allow multiple installations running together")
         .prompt();
 
     match port_rename_prompt {
-        Ok(true) => replace_ports(target_directory),
+        Ok(true) => replace_ports(target_directory, verbose),
         Ok(false) => println!("Continuing without port rename"),
         Err(_) => println!("Error with Port renaming"),
     }
@@ -131,7 +132,7 @@ fn conditionally_replace_ports(target_directory: &str) {
 
 /// Replace Standard/Dafault Ports
 /// Wraps call to sed with replace parameters, commits after each replace.
-pub fn replace_ports(target_directory: &str) {
+pub fn replace_ports(target_directory: &str, verbose: bool) {
     println!(
         "{FORGE_UNICODE}Optional find and replace for service ports in {}",
         target_directory.bold()
@@ -157,7 +158,10 @@ pub fn replace_ports(target_directory: &str) {
 
         match port_for_service {
             Ok(provided_port_from_user) => {
-                println!("Provided: {}", provided_port_from_user);
+                if verbose {
+                    println!("Provided: {}", provided_port_from_user);
+                }
+
                 let is_numeric = provided_port_from_user.chars().all(|c| c.is_ascii_digit());
                 if !is_numeric {
                     eprintln!(
@@ -198,16 +202,17 @@ pub fn replace_ports(target_directory: &str) {
                     &target_port_number,
                     &provided_port_from_user,
                     port_and_service.replace_only_mapped,
+                    verbose,
                 );
 
                 if replace_happened {
-                    // Commit the changes
                     let commit_message = format!(
                         "Replaced {} port for {} with {}",
                         &port_and_service.port_number,
                         &port_and_service.service_name.bold(),
                         &provided_port_from_user
                     );
+
                     match commit_to_directory(target_directory, &commit_message) {
                         Ok(_) => println!("Committed: {}", commit_message),
                         Err(e) => println!("Failed to commit: {}", e),
@@ -218,22 +223,23 @@ pub fn replace_ports(target_directory: &str) {
         }
     }
 }
+
 /// Wraps create_dot_env allowing main function to cal a one-liner
-fn conditionally_create_dot_env(target_directory: &str) {
+fn conditionally_create_dot_env(target_directory: &str, verbose: bool) {
     let port_rename_prompt = Confirm::new("Continue with .env creation?")
         .with_default(true)
         .with_help_message("Generates a skeletal .env so that the appplication can run, you can skip and create one on your own or run `make create_dot_env_file`")
         .prompt();
 
     match port_rename_prompt {
-        Ok(true) => create_dot_env(target_directory),
+        Ok(true) => create_dot_env(target_directory, verbose),
         Ok(false) => println!("Continuing without .env creation"),
         Err(_) => println!("Error with .env creation"),
     }
 }
 
 /// Creates .env using DJForge's make if not there in target_directory
-pub fn create_dot_env(target_directory: &str) {
+pub fn create_dot_env(target_directory: &str, verbose: bool) {
     println!(
         "{FORGE_UNICODE}Create .env in {} if not there, using DJForge's make command",
         target_directory.bold()
@@ -262,9 +268,10 @@ pub fn create_dot_env(target_directory: &str) {
 
     // Check exit status
     if make_output.status.success() {
-        // Convert stdout to string
-        let stdout = String::from_utf8_lossy(&make_output.stdout);
-        println!("Success! Output:\n{}", stdout);
+        if verbose {
+            let stdout = String::from_utf8_lossy(&make_output.stdout);
+            println!("Success! Output:\n{}", stdout);
+        }
 
         // Optionally handle stderr
         let stderr = String::from_utf8_lossy(&make_output.stderr);
@@ -273,6 +280,7 @@ pub fn create_dot_env(target_directory: &str) {
         }
     } else {
         eprintln!("Make command failed with status: {}", make_output.status);
+
         let error_message = String::from_utf8_lossy(&make_output.stderr);
         eprintln!("Make command failed with error: {}", error_message);
     }

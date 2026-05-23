@@ -40,7 +40,7 @@ const COMMANDS_TO_CHECK: [CommandAndDescription; 4] = [
     },
 ];
 
-pub fn check_environment() {
+pub fn check_environment(verbose: bool) {
     println!("{FORGE_UNICODE}Check that everything needed for DJForge to run is available.\n");
 
     for command_to_check in COMMANDS_TO_CHECK {
@@ -53,22 +53,24 @@ pub fn check_environment() {
         let mut parts = command_to_check.command.split_whitespace();
         let program = parts.next().expect("no command given");
 
-        let command_output = Command::new(program)
-            .args(parts) // remaining items become arguments
-            .output();
+        let command_output = Command::new(program).args(parts).output();
 
         match command_output {
             Ok(result_ok) => {
                 // Check exit status
                 if result_ok.status.success() {
-                    // Convert stdout to string
-                    let stdout = String::from_utf8_lossy(&result_ok.stdout);
-                    println!(
-                        "{} found, Executed: '{}' with output: {}",
-                        command_to_check.title,
-                        command_to_check.command.italic(),
-                        stdout
-                    );
+                    if verbose {
+                        // Convert stdout to string
+                        let stdout = String::from_utf8_lossy(&result_ok.stdout);
+                        println!(
+                            "{} found, Executed: '{}' with output: {}",
+                            command_to_check.title,
+                            command_to_check.command.italic(),
+                            stdout
+                        );
+                    } else {
+                        println!("Found ✅");
+                    }
                 } else {
                     eprintln!(
                         "Search command failed with status: {}",
