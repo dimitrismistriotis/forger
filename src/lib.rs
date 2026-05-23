@@ -20,6 +20,7 @@ use git_actions::{clone_repo, commit_to_directory};
 use port_number_rewrite::replace_text_in_target_folder;
 
 const MAX_PORT: u16 = 65535;
+const NETWORK_IN_DOCKER_COMPOSE: &str = "dj_forge_network";
 
 #[derive(Debug)]
 struct PortAndService {
@@ -301,11 +302,43 @@ pub fn create_dot_env(target_directory: &str, verbose: bool) {
 pub fn replace_network_in_docker_compose(context: ApplicationContext) {
     println!("Context: {:?}", context);
 
-    if context.verbose() {
-        println!("Working with {}", context.target());
-    }
-
     // TODO:
     // SED docker compose yaml in tearget to rename the newtwork avoiding conflicts
     // Add this method to the base run-all one
+     let target_location = format!("{}/docker-compose.yml", context.target());
+     let mut replace_command_binding = Command::new("sed");
+     let replace_command = replace_command_binding
+            .arg("-i")
+            .arg(format!(
+                "s/{}/{}/g",
+                NETWORK_IN_DOCKER_COMPOSE, "TARGET_DIRECTORY_BASE_NAME"
+            ))
+            .arg(&target_location);
+
+        if context.verbose() {
+            println!("Executing: {:?}", replace_command);
+        }
+
+        let output = replace_command
+            .output()
+            .expect("Failed to execute port mapping replace command");
+
+        // Check exit status
+        if output.status.success() {
+            if context.verbose() {
+                // Convert stdout to string
+                let stdout = String::from_utf8_lossy(&output.stdout);
+                println!("Success! Output:\n{}", stdout);
+            }
+
+            // Optionally handle stderr
+            let stderr = String::from_utf8_lossy(&output.stderr);
+            if !stderr.is_empty() {
+                eprintln!("Warnings/Errors:\n{}", stderr);
+            }
+        } else {
+            eprintln!("Command failed with status: {}", output.status);
+            let error_message = String::from_utf8_lossy(&output.stderr);
+            eprintln!("Command failed with error: {}", error_message.red());
+        }
 }
