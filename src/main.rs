@@ -1,7 +1,8 @@
 use clap::{Parser, Subcommand};
 
+use forger::context::ApplicationContext;
 use forger::doctor::check_environment;
-use forger::{create_dot_env, create_new_djforge, replace_ports};
+use forger::{create_dot_env, create_new_djforge, replace_ports,replace_network_in_docker_compose};
 
 #[derive(Parser)]
 #[command(version, about, long_about = None)]
@@ -20,7 +21,7 @@ enum Commands {
     /// Replaces ports for services for cloned repository in <target> directory
     ReplacePorts { target: String },
     /// Repplaces network tag inside docer-compose.yml in <target> directory
-    ReplaceNetworkInDockerCompose  { target: String },
+    ReplaceNetworkInDockerCompose { target: String },
     /// Checks that commands needed to run DJForge exist in the system
     Doctor,
     /// Generate prelimilary .env with Secret Key so that the application can run
@@ -49,7 +50,14 @@ fn main() {
             check_environment(cli.verbose);
         }
         Commands::ReplacePorts { target } => replace_ports(target, cli.verbose),
-        Commands::ReplaceNetworkInDockerCompose { target } => replace_ports(target, cli.verbose),
+        Commands::ReplaceNetworkInDockerCompose { target } => {
+            let context = ApplicationContext {
+                target: target.to_string(),
+                verbose: cli.verbose,
+            };
+
+            replace_network_in_docker_compose(context);
+        },
         Commands::GenerateDotEnv { target } => {
             create_dot_env(target, cli.verbose);
         }

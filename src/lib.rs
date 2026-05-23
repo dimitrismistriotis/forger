@@ -11,8 +11,10 @@ pub mod port_number_rewrite;
 mod common_strings;
 pub mod doctor;
 mod git_actions;
+pub mod context;
 
 use common_strings::FORGE_UNICODE;
+use context::ApplicationContext;
 use doctor::check_environment;
 use git_actions::{clone_repo, commit_to_directory};
 use port_number_rewrite::replace_text_in_target_folder;
@@ -293,5 +295,13 @@ pub fn create_dot_env(target_directory: &str, verbose: bool) {
 
         let error_message = String::from_utf8_lossy(&make_output.stderr);
         eprintln!("Make command failed with error: {}", error_message);
+    }
+}
+
+pub fn replace_network_in_docker_compose(context: ApplicationContext) {
+    println!("Context: {:?}", context);
+
+    if context.verbose {
+        println!("Working with {}", context.target);
     }
 }
