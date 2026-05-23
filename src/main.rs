@@ -15,7 +15,7 @@ struct Cli {
 
 #[derive(Subcommand)]
 enum Commands {
-    /// Creates new repository in <target> directory
+    /// Creates new repository in <target> directory end to end
     New { target: String },
     /// Replaces ports for services for cloned repository in <target> directory
     ReplacePorts { target: String },
