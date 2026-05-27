@@ -317,8 +317,10 @@ pub fn replace_network_in_docker_compose(context: ApplicationContext) {
     let network_tag_prompt = format!("Choose network tag, default {}", base_directory.bold());
     let network_tag = Text::new(&network_tag_prompt)
         .with_default(base_directory)
-        .prompt();
+        .prompt()
+        .unwrap();
 
+    println!("tag: {}", network_tag);
     // TODO:
     // Add this method to the base run-all one
     //
