@@ -9,9 +9,9 @@ use owo_colors::OwoColorize;
 pub mod port_number_rewrite;
 
 mod common_strings;
+pub mod context;
 pub mod doctor;
 mod git_actions;
-pub mod context;
 
 use common_strings::FORGE_UNICODE;
 use context::ApplicationContext;
@@ -302,43 +302,56 @@ pub fn create_dot_env(target_directory: &str, verbose: bool) {
 pub fn replace_network_in_docker_compose(context: ApplicationContext) {
     println!("Context: {:?}", context);
 
+    let base_directory = Path::new(context.target())
+        .file_name()
+        .and_then(|name| name.to_str())
+        .unwrap_or("unknown");
+
+    // Output: "rustc"
+    println!("{}", base_directory);
+
+    let network_tag_prompt = format!("Choose network tag, default {}", base_directory.bold());
+    let network_tag = Text::new(&network_tag_prompt)
+        .with_default(base_directory)
+        .prompt();
+
     // TODO:
     // SED docker compose yaml in tearget to rename the newtwork avoiding conflicts
     // Add this method to the base run-all one
-     let target_location = format!("{}/docker-compose.yml", context.target());
-     let mut replace_command_binding = Command::new("sed");
-     let replace_command = replace_command_binding
-            .arg("-i")
-            .arg(format!(
-                "s/{}/{}/g",
-                NETWORK_IN_DOCKER_COMPOSE, "TARGET_DIRECTORY_BASE_NAME"
-            ))
-            .arg(&target_location);
+    let target_location = format!("{}/docker-compose.yml", context.target());
+    let mut replace_command_binding = Command::new("sed");
+    let replace_command = replace_command_binding
+        .arg("-i")
+        .arg(format!(
+            "s/{}/{}/g",
+            NETWORK_IN_DOCKER_COMPOSE, "TARGET_DIRECTORY_BASE_NAME"
+        ))
+        .arg(&target_location);
 
+    if context.verbose() {
+        println!("Executing: {:?}", replace_command);
+    }
+
+    let output = replace_command
+        .output()
+        .expect("Failed to execute port mapping replace command");
+
+    // Check exit status
+    if output.status.success() {
         if context.verbose() {
-            println!("Executing: {:?}", replace_command);
+            // Convert stdout to string
+            let stdout = String::from_utf8_lossy(&output.stdout);
+            println!("Success! Output:\n{}", stdout);
         }
 
-        let output = replace_command
-            .output()
-            .expect("Failed to execute port mapping replace command");
-
-        // Check exit status
-        if output.status.success() {
-            if context.verbose() {
-                // Convert stdout to string
-                let stdout = String::from_utf8_lossy(&output.stdout);
-                println!("Success! Output:\n{}", stdout);
-            }
-
-            // Optionally handle stderr
-            let stderr = String::from_utf8_lossy(&output.stderr);
-            if !stderr.is_empty() {
-                eprintln!("Warnings/Errors:\n{}", stderr);
-            }
-        } else {
-            eprintln!("Command failed with status: {}", output.status);
-            let error_message = String::from_utf8_lossy(&output.stderr);
-            eprintln!("Command failed with error: {}", error_message.red());
+        // Optionally handle stderr
+        let stderr = String::from_utf8_lossy(&output.stderr);
+        if !stderr.is_empty() {
+            eprintln!("Warnings/Errors:\n{}", stderr);
         }
+    } else {
+        eprintln!("Command failed with status: {}", output.status);
+        let error_message = String::from_utf8_lossy(&output.stderr);
+        eprintln!("Command failed with error: {}", error_message.red());
+    }
 }
