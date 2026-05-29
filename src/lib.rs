@@ -320,8 +320,10 @@ pub fn replace_network_in_docker_compose(context: ApplicationContext) {
         .prompt();
 
     // TODO:
-    // Commit Changes
     // Add this method to the base run-all one
+    //
+    // Sed to update network Tag
+    //
     let docker_compose_location = format!("{}/docker-compose.yml", context.target());
     let mut replace_command_binding = Command::new("sed");
     let replace_command = replace_command_binding
@@ -354,5 +356,22 @@ pub fn replace_network_in_docker_compose(context: ApplicationContext) {
         eprintln!("Command failed with status: {}", output.status);
         let error_message = String::from_utf8_lossy(&output.stderr);
         eprintln!("Command failed with error: {}", error_message.red());
+
+        return;
+    }
+
+    //
+    // Commit changes
+    //
+    let commit_message = format!(
+        "Replaced {} port for {} with {}",
+        &port_and_service.port_number,
+        &port_and_service.service_name.bold(),
+        &provided_port_from_user
+    );
+
+    match commit_to_directory(target_directory, &commit_message) {
+        Ok(_) => println!("Committed: {}", commit_message),
+        Err(e) => println!("Failed to commit: {}", e),
     }
 }
