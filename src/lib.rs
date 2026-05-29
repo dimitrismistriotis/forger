@@ -307,8 +307,9 @@ pub fn replace_network_in_docker_compose(context: ApplicationContext) {
         .and_then(|name| name.to_str())
         .unwrap_or("unknown");
 
-    // Output: "rustc"
-    println!("{}", base_directory);
+    if context.verbose() {
+        println!("Base directory of target path to be used as default value for network tag: {}", base_directory);
+    }
 
     let network_tag_prompt = format!("Choose network tag, default {}", base_directory.bold());
     let network_tag = Text::new(&network_tag_prompt)
