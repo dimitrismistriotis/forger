@@ -2,7 +2,9 @@ use clap::{Parser, Subcommand};
 
 use forger::context::ApplicationContext;
 use forger::doctor::check_environment;
-use forger::{create_dot_env, create_new_djforge, replace_ports,replace_network_in_docker_compose};
+use forger::{
+    create_dot_env, create_new_djforge, replace_network_in_docker_compose, replace_ports,
+};
 
 #[derive(Parser)]
 #[command(version, about, long_about = None)]
@@ -54,7 +56,7 @@ fn main() {
             let context = ApplicationContext::new(target.to_string(), cli.verbose);
 
             replace_network_in_docker_compose(context);
-        },
+        }
         Commands::GenerateDotEnv { target } => {
             create_dot_env(target, cli.verbose);
         }

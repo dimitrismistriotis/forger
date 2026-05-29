@@ -308,7 +308,10 @@ pub fn replace_network_in_docker_compose(context: ApplicationContext) {
         .unwrap_or("unknown");
 
     if context.verbose() {
-        println!("Base directory of target path to be used as default value for network tag: {}", base_directory);
+        println!(
+            "Base directory of target path to be used as default value for network tag: {}",
+            base_directory
+        );
     }
 
     let network_tag_prompt = format!("Choose network tag, default {}", base_directory.bold());
@@ -317,17 +320,14 @@ pub fn replace_network_in_docker_compose(context: ApplicationContext) {
         .prompt();
 
     // TODO:
-    // SED docker compose yaml in tearget to rename the newtwork avoiding conflicts
+    // Commit Changes
     // Add this method to the base run-all one
-    let target_location = format!("{}/docker-compose.yml", context.target());
+    let docker_compose_location = format!("{}/docker-compose.yml", context.target());
     let mut replace_command_binding = Command::new("sed");
     let replace_command = replace_command_binding
         .arg("-i")
-        .arg(format!(
-            "s/{}/{}/g",
-            NETWORK_IN_DOCKER_COMPOSE, "TARGET_DIRECTORY_BASE_NAME"
-        ))
-        .arg(&target_location);
+        .arg(format!("s/{}/{}/g", NETWORK_IN_DOCKER_COMPOSE, network_tag))
+        .arg(&docker_compose_location);
 
     if context.verbose() {
         println!("Executing: {:?}", replace_command);
