@@ -378,7 +378,7 @@ pub fn replace_network_in_docker_compose(
     );
 
     if context.verbose() {
-        println("Commiting with {}", commit_message);
+        println!("Commiting with {}", commit_message);
     }
 
     commit_to_directory(context.target(), &commit_message)?;
