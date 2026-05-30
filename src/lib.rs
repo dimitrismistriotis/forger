@@ -299,7 +299,8 @@ pub fn create_dot_env(target_directory: &str, verbose: bool) {
     }
 }
 
-pub fn replace_network_in_docker_compose(context: ApplicationContext) {
+pub fn replace_network_in_docker_compose(context: ApplicationContext) -> Result<(), Box<dyn Error>> {
+
     println!("Context: {:?}", context);
 
     let base_directory = Path::new(context.target())
@@ -359,21 +360,23 @@ pub fn replace_network_in_docker_compose(context: ApplicationContext) {
         let error_message = String::from_utf8_lossy(&output.stderr);
         eprintln!("Command failed with error: {}", error_message.red());
 
-        return;
+        return Err(format!("Could note map network tag in {}", docker_compose_location.bold()).into());
     }
 
     //
     // Commit changes
     //
-    let commit_message = format!(
-        "Replaced {} port for {} with {}",
-        &port_and_service.port_number,
-        &port_and_service.service_name.bold(),
-        &provided_port_from_user
-    );
+//    let commit_message = format!(
+//    //       "Replaced {} port for {} with {}",
+//        &port_and_service.port_number,
+//        &port_and_service.service_name.bold(),
+//        &provided_port_from_user
+//    );
 
-    match commit_to_directory(target_directory, &commit_message) {
-        Ok(_) => println!("Committed: {}", commit_message),
-        Err(e) => println!("Failed to commit: {}", e),
-    }
+  //  match commit_to_directory(target_directory, &commit_message) {
+  //      Ok(_) => println!("Committed: {}", commit_message),
+  //      Err(e) => println!("Failed to commit: {}", e),
+  //  }
+
+    Ok(())
 }
