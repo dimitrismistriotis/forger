@@ -381,10 +381,7 @@ pub fn replace_network_in_docker_compose(
         println("Commiting with {}", commit_message);
     }
 
-    //  match commit_to_directory(target_directory, &commit_message) {
-    //      Ok(_) => println!("Committed: {}", commit_message),
-    //      Err(e) => println!("Failed to commit: {}", e),
-    //  }
+    commit_to_directory(context.target(), &commit_message)?;
 
     Ok(())
 }
