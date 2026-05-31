@@ -373,12 +373,11 @@ pub fn replace_network_in_docker_compose(
     //
     let commit_message = format!(
         "Replaced network tag to {} in {}",
-        &network_tag,
-        &docker_compose_location.bold(),
+        &network_tag, &docker_compose_location,
     );
 
     if context.verbose() {
-        println!("Commiting with {}", commit_message);
+        println!("Commiting with {}", commit_message.bold());
     }
 
     commit_to_directory(context.target(), &commit_message)?;
