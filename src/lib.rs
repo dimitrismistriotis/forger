@@ -15,11 +15,11 @@ pub mod doctor;
 mod git_actions;
 
 use common_strings::FORGE_UNICODE;
+use context::ApplicationContext;
 use doctor::check_environment;
 use git_actions::{clone_repo, commit_to_directory};
-use port_number_rewrite::replace_text_in_target_folder;
-use context::ApplicationContext;
 use network_tag_rewrite::replace_network_in_docker_compose;
+use port_number_rewrite::replace_text_in_target_folder;
 
 const MAX_PORT: u16 = 65535;
 
@@ -91,7 +91,10 @@ pub fn create_new_djforge(
     let target_directory = context.target();
     let verbose = context.verbose();
 
-    println!("{FORGE_UNICODE}Clone {repository} @ {target_branch} in {target_directory}");
+    println!(
+        "{FORGE_UNICODE}Clone {repository} @ {target_branch} in {}",
+        context.target().bold()
+    );
     // Guard Clauses
 
     // First is existence checking, I want to refactor this to
@@ -303,4 +306,3 @@ pub fn create_dot_env(target_directory: &str, verbose: bool) {
         eprintln!("Make command failed with error: {}", error_message);
     }
 }
-

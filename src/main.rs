@@ -39,11 +39,9 @@ fn main() {
         Commands::New { target } => {
             let context = ApplicationContext::new(target.to_string(), cli.verbose);
 
-            if let Err(e) = create_new_djforge(
-                REPOSITORY_LOCATION,
-                REPOSITORY_DEFAULT_BRANCH,
-                context
-            ) {
+            if let Err(e) =
+                create_new_djforge(REPOSITORY_LOCATION, REPOSITORY_DEFAULT_BRANCH, context)
+            {
                 eprintln!("{e}");
                 std::process::exit(1);
             }
