@@ -11,7 +11,7 @@ use crate::git_actions::commit_to_directory;
 const NETWORK_IN_DOCKER_COMPOSE: &str = "dj_forge_network";
 
 pub fn replace_network_in_docker_compose(
-    context: ApplicationContext,
+    context: &ApplicationContext,
 ) -> Result<(), Box<dyn Error>> {
     println!("Context: {:?}", context);
 
@@ -34,8 +34,6 @@ pub fn replace_network_in_docker_compose(
         .unwrap();
 
     println!("tag: {}", network_tag);
-    // TODO:
-    // Add this method to the base run-all one
     //
     // Sed to update network Tag
     //

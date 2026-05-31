@@ -19,6 +19,7 @@ use doctor::check_environment;
 use git_actions::{clone_repo, commit_to_directory};
 use port_number_rewrite::replace_text_in_target_folder;
 use context::ApplicationContext;
+use network_tag_rewrite::replace_network_in_docker_compose;
 
 const MAX_PORT: u16 = 65535;
 
@@ -114,6 +115,8 @@ pub fn create_new_djforge(
     check_environment(verbose);
 
     conditionally_create_dot_env(target_directory, verbose);
+
+    replace_network_in_docker_compose(&context)?;
 
     println!(
         "{FORGE_UNICODE}Application checked out and parametriesed in {}. Check and merge {}. You are ready to go!",

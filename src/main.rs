@@ -55,7 +55,7 @@ fn main() {
         Commands::ReplaceNetworkInDockerCompose { target } => {
             let context = ApplicationContext::new(target.to_string(), cli.verbose);
 
-            let result = replace_network_in_docker_compose(context);
+            let result = replace_network_in_docker_compose(&context);
 
             match result {
                 Ok(_) => {}
