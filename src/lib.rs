@@ -18,6 +18,7 @@ use common_strings::FORGE_UNICODE;
 use doctor::check_environment;
 use git_actions::{clone_repo, commit_to_directory};
 use port_number_rewrite::replace_text_in_target_folder;
+use context::ApplicationContext;
 
 const MAX_PORT: u16 = 65535;
 
@@ -83,11 +84,13 @@ fn checkout_to_post_configuration_branch(target_repository: Repository) -> Resul
 pub fn create_new_djforge(
     repository: &str,
     target_branch: &str,
-    target_directory: &str,
-    verbose: bool,
+    context: ApplicationContext,
 ) -> Result<(), Box<dyn Error>> {
-    println!("{FORGE_UNICODE}Clone {repository} @ {target_branch} in {target_directory}");
+    // Assignments for code that does not use context
+    let target_directory = context.target();
+    let verbose = context.verbose();
 
+    println!("{FORGE_UNICODE}Clone {repository} @ {target_branch} in {target_directory}");
     // Guard Clauses
 
     // First is existence checking, I want to refactor this to

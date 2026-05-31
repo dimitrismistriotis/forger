@@ -37,11 +37,12 @@ fn main() {
 
     match &cli.command {
         Commands::New { target } => {
+            let context = ApplicationContext::new(target.to_string(), cli.verbose);
+
             if let Err(e) = create_new_djforge(
                 REPOSITORY_LOCATION,
                 REPOSITORY_DEFAULT_BRANCH,
-                target,
-                cli.verbose,
+                context
             ) {
                 eprintln!("{e}");
                 std::process::exit(1);
