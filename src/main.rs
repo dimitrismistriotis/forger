@@ -2,9 +2,8 @@ use clap::{Parser, Subcommand};
 
 use forger::context::ApplicationContext;
 use forger::doctor::check_environment;
-use forger::{
-    create_dot_env, create_new_djforge, replace_network_in_docker_compose, replace_ports,
-};
+use forger::network_tag_rewrite::replace_network_in_docker_compose;
+use forger::{create_dot_env, create_new_djforge, replace_ports};
 
 #[derive(Parser)]
 #[command(version, about, long_about = None)]
