@@ -49,7 +49,11 @@ fn main() {
         Commands::Doctor => {
             check_environment(cli.verbose);
         }
-        Commands::ReplacePorts { target } => replace_ports(target, cli.verbose),
+        Commands::ReplacePorts { target } => {
+            let context = ApplicationContext::new(target.to_string(), cli.verbose);
+
+            replace_ports(&context);
+        },
         Commands::ReplaceNetworkInDockerCompose { target } => {
             let context = ApplicationContext::new(target.to_string(), cli.verbose);
 
