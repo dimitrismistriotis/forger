@@ -64,7 +64,9 @@ fn main() {
             }
         }
         Commands::GenerateDotEnv { target } => {
-            create_dot_env(target, cli.verbose);
+            let context = ApplicationContext::new(target.to_string(), cli.verbose);
+
+            create_dot_env(&context);
         }
     }
 }
