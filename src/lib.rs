@@ -6,15 +6,19 @@ use git2::Repository;
 use inquire::{Confirm, Text};
 use owo_colors::OwoColorize;
 
+pub mod network_tag_rewrite;
 pub mod port_number_rewrite;
 
 mod common_strings;
+pub mod context;
 pub mod doctor;
 mod git_actions;
 
 use common_strings::FORGE_UNICODE;
+use context::ApplicationContext;
 use doctor::check_environment;
 use git_actions::{clone_repo, commit_to_directory};
+use network_tag_rewrite::replace_network_in_docker_compose;
 use port_number_rewrite::replace_text_in_target_folder;
 
 const MAX_PORT: u16 = 65535;
@@ -81,11 +85,16 @@ fn checkout_to_post_configuration_branch(target_repository: Repository) -> Resul
 pub fn create_new_djforge(
     repository: &str,
     target_branch: &str,
-    target_directory: &str,
-    verbose: bool,
+    context: ApplicationContext,
 ) -> Result<(), Box<dyn Error>> {
-    println!("{FORGE_UNICODE}Clone {repository} @ {target_branch} in {target_directory}");
+    // Assignments for code that does not use context
+    let target_directory = context.target();
+    let verbose = context.verbose();
 
+    println!(
+        "{FORGE_UNICODE}Clone {repository} @ {target_branch} in {}",
+        context.target().bold()
+    );
     // Guard Clauses
 
     // First is existence checking, I want to refactor this to
@@ -104,11 +113,13 @@ pub fn create_new_djforge(
         )
     })?;
 
-    conditionally_replace_ports(target_directory, verbose);
+    conditionally_replace_ports(&context);
 
     check_environment(verbose);
 
-    conditionally_create_dot_env(target_directory, verbose);
+    conditionally_create_dot_env(&context);
+
+    replace_network_in_docker_compose(&context)?;
 
     println!(
         "{FORGE_UNICODE}Application checked out and parametriesed in {}. Check and merge {}. You are ready to go!",
@@ -119,14 +130,14 @@ pub fn create_new_djforge(
 }
 
 /// Wraps replace_ports allowing main function to cal a one-liner
-fn conditionally_replace_ports(target_directory: &str, verbose: bool) {
+fn conditionally_replace_ports(context: &ApplicationContext) {
     let port_rename_prompt = Confirm::new("Continue with Port rename?")
         .with_default(true)
         .with_help_message("Find/Replace in target directory of default ports for Database and other services. Aims to allow multiple installations running together")
         .prompt();
 
     match port_rename_prompt {
-        Ok(true) => replace_ports(target_directory, verbose),
+        Ok(true) => replace_ports(&context),
         Ok(false) => println!("Continuing without port rename"),
         Err(_) => println!("Error with Port renaming"),
     }
@@ -134,7 +145,11 @@ fn conditionally_replace_ports(target_directory: &str, verbose: bool) {
 
 /// Replace Standard/Dafault Ports
 /// Wraps call to sed with replace parameters, commits after each replace.
-pub fn replace_ports(target_directory: &str, verbose: bool) {
+pub fn replace_ports(context: &ApplicationContext) {
+    let target_directory = context.target();
+    let verbose = context.verbose();
+
+
     println!(
         "{FORGE_UNICODE}Optional find and replace for service ports in {}",
         target_directory.bold()
@@ -235,21 +250,24 @@ pub fn replace_ports(target_directory: &str, verbose: bool) {
 }
 
 /// Wraps create_dot_env allowing main function to cal a one-liner
-fn conditionally_create_dot_env(target_directory: &str, verbose: bool) {
+fn conditionally_create_dot_env(context: &ApplicationContext) {
     let port_rename_prompt = Confirm::new("Continue with .env creation?")
         .with_default(true)
         .with_help_message("Generates a skeletal .env so that the appplication can run, you can skip and create one on your own or run `make create_dot_env_file`")
         .prompt();
 
     match port_rename_prompt {
-        Ok(true) => create_dot_env(target_directory, verbose),
+        Ok(true) => create_dot_env(&context),
         Ok(false) => println!("Continuing without .env creation"),
         Err(_) => println!("Error with .env creation"),
     }
 }
 
 /// Creates .env using DJForge's make if not there in target_directory
-pub fn create_dot_env(target_directory: &str, verbose: bool) {
+pub fn create_dot_env(context: &ApplicationContext) {
+    let target_directory = context.target();
+    let verbose = context.verbose();
+
     println!(
         "{FORGE_UNICODE}Create .env in {} if not there, using DJForge's make command",
         target_directory.bold()

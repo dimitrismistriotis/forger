@@ -1,6 +1,8 @@
 use clap::{Parser, Subcommand};
 
+use forger::context::ApplicationContext;
 use forger::doctor::check_environment;
+use forger::network_tag_rewrite::replace_network_in_docker_compose;
 use forger::{create_dot_env, create_new_djforge, replace_ports};
 
 #[derive(Parser)]
@@ -19,6 +21,8 @@ enum Commands {
     New { target: String },
     /// Replaces ports for services for cloned repository in <target> directory
     ReplacePorts { target: String },
+    /// Repplaces network tag inside docer-compose.yml in <target> directory
+    ReplaceNetworkInDockerCompose { target: String },
     /// Checks that commands needed to run DJForge exist in the system
     Doctor,
     /// Generate prelimilary .env with Secret Key so that the application can run
@@ -33,12 +37,11 @@ fn main() {
 
     match &cli.command {
         Commands::New { target } => {
-            if let Err(e) = create_new_djforge(
-                REPOSITORY_LOCATION,
-                REPOSITORY_DEFAULT_BRANCH,
-                target,
-                cli.verbose,
-            ) {
+            let context = ApplicationContext::new(target.to_string(), cli.verbose);
+
+            if let Err(e) =
+                create_new_djforge(REPOSITORY_LOCATION, REPOSITORY_DEFAULT_BRANCH, context)
+            {
                 eprintln!("{e}");
                 std::process::exit(1);
             }
@@ -46,9 +49,28 @@ fn main() {
         Commands::Doctor => {
             check_environment(cli.verbose);
         }
-        Commands::ReplacePorts { target } => replace_ports(target, cli.verbose),
+        Commands::ReplacePorts { target } => {
+            let context = ApplicationContext::new(target.to_string(), cli.verbose);
+
+            replace_ports(&context);
+        },
+        Commands::ReplaceNetworkInDockerCompose { target } => {
+            let context = ApplicationContext::new(target.to_string(), cli.verbose);
+
+            let result = replace_network_in_docker_compose(&context);
+
+            match result {
+                Ok(_) => {}
+                Err(e) => {
+                    eprintln!("{e}");
+                    std::process::exit(1);
+                }
+            }
+        }
         Commands::GenerateDotEnv { target } => {
-            create_dot_env(target, cli.verbose);
+            let context = ApplicationContext::new(target.to_string(), cli.verbose);
+
+            create_dot_env(&context);
         }
     }
 }
